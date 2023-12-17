@@ -13,9 +13,11 @@
     "dependencies": {
         "axios": "^0.27.2",
         "blueimp-md5": "^2.19.0",
+        "cloudinary": "^1.41.0",
         "cors": "^2.8.5",
         "dotenv": "^16.3.1",
         "express": "^4.18.2",
+        "fs": "^0.0.1-security",
         "redis": "^4.3.1"
     }
 }
