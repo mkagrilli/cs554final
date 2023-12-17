@@ -1,8 +1,16 @@
 import React from "react";
 import { useAuth0 } from "@auth0/auth0-react";
 
+const getToken = async () => {
+    let { getAccessTokenSilently } = useAuth0();
+
+    const token = await getAccessTokenSilently();
+    console.log(token);
+};
+
 const Profile: React.FC = () => {
     let { user, isAuthenticated, isLoading } = useAuth0();
+
     if (!isAuthenticated) {
         user = {
             picture: "https://assets.pokemon.com/assets/cms2/img/pokedex/full/258.png",
@@ -10,6 +18,7 @@ const Profile: React.FC = () => {
             email: "No Email"
         }
     }
+    getToken()
     if (isLoading) {
         return <div>Loading ...</div>;
     }

@@ -26,6 +26,14 @@ export const isAlphanumericString = (arg, argName) => {
     }
 }
 
+export const isValidEmail = (arg) => {
+	arg = isValidString(arg);
+	arg = arg.toLowerCase();
+	let format = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
+	if(arg.match(format) == false) {throw new Error("Error: invalid email format.")}
+	return arg;
+}
+
 export const isNumericString = (arg, argName) => {
     arg = isValidString(arg, argName);
     if (arg.match(/^[0-9]+$/) === null) {
@@ -107,4 +115,9 @@ export const isValidRating = (arg) => { // Specific
     if (isNaN(arg)) {throw new Error("Error: rating is not a number.")}
     if ((arg.toString().length == 1 || arg.toString().length == 3) == false) {throw new Error("Error: invalid rating format.")}
     if (arg < 1 || arg > 5) {throw new Error("Error: the rating is invalid.")}
+}
+
+export const removeElementFromArray = (array, element) => {
+    array.splice(array.indexOf(element), 1)
+    return array;
 }
