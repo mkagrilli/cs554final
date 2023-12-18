@@ -4,7 +4,6 @@ import postRoutes from './posts.js'
 
 
 const constructorMethod = (app) => {
-    // app.use('/api/comics', comicsRoutes);
     app.use('/env', envRoutes);
     app.use('/users', userRoutes);
     app.use('/posts', postRoutes);
