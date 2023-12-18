@@ -7,6 +7,7 @@ import Login from "./Login"
 import Logout from "./Logout"
 import Profile from "./Profile"
 import MainMap from "./Map"
+import Sighting from './Sighting'
 
 function App() {
 
@@ -35,6 +36,7 @@ function App() {
           <Route path='/post' element={<Post/>}/>
           <Route path='/profile' element={<Profile/>}/>
           <Route path='/map' element={<MainMap/>}/>
+          <Route path='/post/:id' element={<Sighting/>}/>
           <Route path='*' element={<NotFound/>}/>
         </Routes>
       </div>
