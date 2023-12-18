@@ -17,9 +17,9 @@ const app = express();
 const staticDir = express.static(__dirname + '/public');
 import configRoutes from './routes/index.js';
 import * as helpers from './helpers.js'
-import redis from 'redis';
-const client = redis.createClient();
-client.connect().then(() => {});
+// import redis from 'redis';
+// const client = redis.createClient();
+// client.connect().then(() => {});
 
 app.use('/public', staticDir);
 app.use(express.json());

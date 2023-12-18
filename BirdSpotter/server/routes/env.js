@@ -1,12 +1,3 @@
-/*******************************************************************************
- * Name        : stories.js
- * Author      : Brandon Leung
- * Date        : March 25, 2023
- * Description : Lab 6 bands route function implementation.
- * Pledge      : I pledge my honor that I have abided by the Stevens Honor System.
- ******************************************************************************/
-// Import the express router as shown in the lecture code
-// Note: please do not forget to export the router!
 import {Router} from 'express';
 const router = Router();
 
