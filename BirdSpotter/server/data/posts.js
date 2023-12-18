@@ -22,7 +22,7 @@ export const create = async (userId, title, imageUrl, description, location, coo
 	imageUrl = helpers.isValidString(imageUrl);
 	description = helpers.isValidString(description);
 	location = helpers.isValidString(location);
-	coordinates = helpers.isValidString(coordinates);
+	//coordinates = helpers.isValidString(coordinates);
 
 	//IMAGE
 	//----------------------
