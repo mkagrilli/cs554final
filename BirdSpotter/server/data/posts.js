@@ -81,7 +81,7 @@ export const create = async (userId, title, imageUrl, description, location, coo
 	//----------------------
 
 	let newPost= {
-		userId: userId,
+		userId: new ObjectId("6583386c02d40519dff254b6"), //userId,
 		title: title,
 		imageUrl: images,
 		description: description,
