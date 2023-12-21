@@ -14,6 +14,23 @@ interface FormData {
 const LeafletMap: React.FC<{ onCoordinatesChange: (coordinates: [number, number]) => void }> = ({
   onCoordinatesChange,
 }) => {
+  let { user, isAuthenticated } = useAuth0();
+    const [userData, setUserData] = useState<Record<string, any>>({});
+    useEffect(() => {
+        const getUserData = async () => {
+            if (isAuthenticated && user) {
+                const data = { authId: user.sub };
+                const userIsRegistered = (await axios.post(`http://localhost:3000/users/checkIfRegistered`, data)).data.isRegistered;
+                if (userIsRegistered) {
+                    console.log('User is authenticated and registered');
+                    const data = (await axios.get(`http://localhost:3000/users/authid/${user.sub}`)).data.data
+                    setUserData(data);
+                    console.log(data)
+                }
+            }
+        };
+        getUserData();
+    }, [isAuthenticated, user]); 
   const [position, setPosition] = useState<[number, number]>([0, 0]);
 
   const handleMarkerDragEnd = (event: L.LeafletEvent) => {
@@ -84,7 +101,7 @@ const MyForm: React.FC = () => {
 
     try {
       const form = new FormData();
-      form.append('userId', formData.userId); // Include userId in the form data
+      form.append('userId', userData._id);//formData.userId); // Include userId in the form data
       form.append('title', formData.title);
       form.append('desc', formData.desc);
       if (formData.image) {
