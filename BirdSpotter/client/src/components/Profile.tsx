@@ -1,40 +1,46 @@
 import React from "react";
 import { useAuth0 } from "@auth0/auth0-react";
-
-const getToken = async () => {
-    let { getAccessTokenSilently } = useAuth0();
-
-    const token = await getAccessTokenSilently();
-    console.log(token);
-};
+import axios from 'axios';
+import { useState, useEffect } from 'react';
 
 const Profile: React.FC = () => {
     let { user, isAuthenticated, isLoading } = useAuth0();
+    const [userData, setUserData] = useState<Record<string, any>>({});
 
-    if (!isAuthenticated) {
-        user = {
-            picture: "https://assets.pokemon.com/assets/cms2/img/pokedex/full/258.png",
-            name: "Guest",
-            email: "No Email"
-        }
-    }
-    getToken()
-    if (isLoading) {
-        return <div>Loading ...</div>;
-    }
+    useEffect(() => {
+        const getUserData = async () => {
+            if (isAuthenticated && user) {
+                const data = { authId: user.sub };
+                const userIsRegistered = (await axios.post(`http://localhost:3000/users/checkIfRegistered`, data)).data.isRegistered;
+                if (userIsRegistered) {
+                    console.log('User is authenticated and registered');
+                    const data = (await axios.get(`http://localhost:3000/users/authid/${user.sub}`)).data.data
+                    setUserData(data);
+                    console.log(data)
+                }
+            }
+        };
+        getUserData();
+    }, [isAuthenticated, user]); 
+
 
     if (!isAuthenticated || !user) {
         return (
-          <div>
-            <p>Hey, profile data is supposed to display here... But you aren't logged in. So that's kind of awkward, ngl.</p>
-          </div>
-        );
-      }
+            <div>
+              <p>Hey, profile data is supposed to display here... But you aren't logged in. So that's kind of awkward, ngl.</p>
+            </div>
+          );
+    }
+    if (isLoading) {
+        return <div>Loading ...</div>;
+    }
     return (
         <div>
             <img src={user.picture} alt={user.name} />
-            <h2>{user.name}</h2>
-            <p>{user.email}</p>
+            <p>Username: {userData.username}</p>
+            <p>Email: {userData.email}</p>
+            <p>MongoDB ID: {userData._id}</p>
+            <p>Auth0 ID: {userData.authId}</p>
         </div>
     );
 };

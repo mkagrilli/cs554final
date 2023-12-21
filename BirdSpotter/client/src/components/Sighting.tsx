@@ -2,19 +2,26 @@ import './App.css'
 import {useState, useEffect} from 'react'
 import {useParams} from 'react-router-dom'
 import axios from 'axios'
+import Comment from './Comment'
+import AddComment from './AddComment'
 
 function Sighting() {
     let {id} = useParams()
     const [sighting, setSighting] = useState<undefined | any>(undefined)
     const [comments, setComments] = useState<undefined | any>(undefined)
+    const [isComments, setIs] = useState(false)
+    const [toggleCom, setToggle] = useState(false)
     useEffect(() => {
         const fetchData = async (id: any) => {
             const {data} = await axios.get(`http://localhost:3000/posts/${id}`) 
             setSighting(data.data)
-            let comms = data.data.comments.map((comms: any) => {
-                return (<div>{comms.body}</div>)
-            })
-            setComments(comms)
+            if (data.data.comments.length !== 0) {
+                let comms = data.data.comments.map((comms: any) => {
+                    return (<Comment comment={comms} key={comms._id}/>)
+                })
+                setComments(comms)
+                setIs(true)
+            }
         }
         fetchData(id)
     },[id])
@@ -27,7 +34,11 @@ function Sighting() {
                 <img src={sighting.imageUrl}/>
                 <br/>
                 <br/>
-                {comments}
+                {isComments && comments}
+                <span>Disagree with the poster's bird identification? </span>
+                <button onClick={() => setToggle(!toggleCom)}>submit your own with a comment</button>
+                <br/>
+                {toggleCom && <AddComment postId={id}/>}
             </div>
         </div>
         )

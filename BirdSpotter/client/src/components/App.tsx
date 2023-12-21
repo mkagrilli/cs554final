@@ -1,5 +1,6 @@
 import './App.css'
-import {NavLink, Route, Routes} from 'react-router-dom'
+import {NavLink, Route, Routes, useNavigate} from 'react-router-dom'
+import { useState, useEffect } from 'react';
 import Home from './Home'
 import Post from './Post'
 import NotFound from './NotFound'
@@ -8,9 +9,37 @@ import Logout from "./Logout"
 import Profile from "./Profile"
 import MainMap from "./Map"
 import Sighting from './Sighting'
+import Register from './Register'
+import { useAuth0 } from "@auth0/auth0-react";
+import axios from 'axios';
 
 function App() {
+    let { user, isAuthenticated } = useAuth0();
+    const navigate = useNavigate();
+    const handleRedirect = () => {
+        navigate('/register');
+    };
 
+    const checkIfRegistered = async () => {
+        if (isAuthenticated && user) {
+            const data = { authId: user.sub };
+            const userIsRegistered = (await axios.post(`http://localhost:3000/users/checkIfRegistered`, data)).data.isRegistered;
+            if (!userIsRegistered) {
+                handleRedirect();
+                console.log('User is authenticated but not registered');
+            } else {
+                console.log('User is authenticated and registered');
+            }
+        } else {
+          console.log('User is not authenticated');
+        }
+    };
+    useEffect(() => {
+        checkIfRegistered();
+    }, [isAuthenticated, user, location.pathname]);
+
+    
+  
   return (
     <>
       <div>
@@ -18,8 +47,13 @@ function App() {
           <h1 className='title'>
             Bird Sightings
           </h1>
-          <Login />
-          <Logout />
+          {isAuthenticated ? (
+            <Logout />
+          ) : (
+            <Login />
+          )}
+          
+          
           <nav>
             <NavLink className='navlink' to='/'>Home</NavLink>
             <br/>
@@ -37,6 +71,7 @@ function App() {
           <Route path='/profile' element={<Profile/>}/>
           <Route path='/map' element={<MainMap/>}/>
           <Route path='/post/:id' element={<Sighting/>}/>
+          <Route path='/register' element={<Register/>}/>
           <Route path='*' element={<NotFound/>}/>
         </Routes>
       </div>

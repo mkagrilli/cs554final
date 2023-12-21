@@ -15,7 +15,7 @@ await db.dropDatabase();
 
 // Creation
 
-const user1 = await users.create("brecksit", "brecksit@gmail.com")
+const user1 = await users.create("auth0|657694419fa97e13efcf9027", "brecksit", "brecksit@gmail.com")
 const user2 = await users.create("echrow", "echrow@gmail.com")
 const user3 = await users.create("linkinparkfan", "linkinparkfan@gmail.com")
 const user4 = await users.create("john_cotton", "jcottonvat19@gmail.com")
