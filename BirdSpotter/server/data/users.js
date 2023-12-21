@@ -2,7 +2,8 @@ import {users} from '../config/mongoCollections.js';
 import {ObjectId} from 'mongodb';
 import * as helpers from '../helpers.js';
 
-export const create = async (username, email) => {
+export const create = async (authId, username, email) => {
+    authId = helpers.isValidString(authId, "Auth0 Id");
 	username = helpers.isValidString(username, "Username");
     if (username.length < 3) {
         throw new Error("Error: usernames must be at least 3 characters long.")
@@ -16,8 +17,9 @@ export const create = async (username, email) => {
         }
     }
 	let newUser= {
+        authId: authId,
 		username: username.toLowerCase(),
-		email: email,
+		email: email
     };
 
 	const userCollection = await users();
@@ -54,6 +56,15 @@ export const getByUsername = async (username) => {
     const userCollection = await users();
     const user = await userCollection.findOne({username: username});
     if (user === null) {throw new Error("Error: there is no user with that username.")}
+    user._id = user._id.toString();
+    return user;
+};
+
+export const getByAuthId = async (authId) => {
+	authId = helpers.isValidString(authId, "Auth0 Id");
+    const userCollection = await users();
+    const user = await userCollection.findOne({authId: authId});
+    if (user === null) {throw new Error("Error: there is no user with that Auth0 Id.")}
     user._id = user._id.toString();
     return user;
 };
