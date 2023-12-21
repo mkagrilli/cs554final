@@ -16,7 +16,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 var api_key = 'cf69ccfea8804bfa99abb6fe78e8f6f0';
 
-await client.connect();
+// await client.connect();
 
 router.route('/').get(async (req, res) => {
     try {
@@ -83,6 +83,8 @@ router.route('/newpost').post(upload.single('image'), async (req, res) => {
   
       if (response.status === 200) {
         const data = response.data;
+        console.log("echo")
+        console.log(req.body)
         let location = data.results[0].formatted;
         const post = await posts.create(userId, title, image, desc, location, [latitude, longitude]);
         return res.status(200).json({ data: post });
@@ -93,6 +95,7 @@ router.route('/newpost').post(upload.single('image'), async (req, res) => {
       }
     }
     catch (e) {
+        console.log(e)
         return res.status(400).json({error: e.message});
     }
 });
