@@ -13,7 +13,7 @@ function MainMap() {
                 center={{ lat: 40.745255, lng: -74.034775}}
                 zoom={13}
                 scrollWheelZoom={true}
-                style={{height:'500px', width:'500px'}}>
+                style={{height:'600px', width:'1000px'}}>
                 <TileLayer
                     attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"

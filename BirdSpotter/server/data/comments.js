@@ -2,16 +2,18 @@ import {posts} from '../config/mongoCollections.js';
 import {ObjectId} from 'mongodb';
 import * as helpers from '../helpers.js';
 
-export const create = async (postId, userId, body) => { // Good?
+export const create = async (postId, userId, body, classification) => { // Good?
 	if (!ObjectId.isValid(postId)) {throw new Error("Error: invalid object ID")};
 	if (!ObjectId.isValid(userId)) {throw new Error("Error: invalid object ID")};
-	body = helpers.isValidString(body);
+	body = helpers.isValidString(body, 'body');
+	classification = helpers.isValidString(classification, 'classification')
 	const commentId = new ObjectId();
 	const newComment = {
 		_id: commentId,
 		postId: postId,
 		userId: userId,
 		body: body,
+		classification: classification,
 		upvotes: [],
 		downvotes: []
 	};
