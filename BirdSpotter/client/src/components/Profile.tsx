@@ -39,8 +39,8 @@ const Profile: React.FC = () => {
             <img src={user.picture} alt={user.name} />
             <p>Username: {userData.username}</p>
             <p>Email: {userData.email}</p>
-            <p>MongoDB ID: {userData._id}</p>
-            <p>Auth0 ID: {userData.authId}</p>
+            {/* <p>MongoDB ID: {userData._id}</p>
+            <p>Auth0 ID: {userData.authId}</p> */}
         </div>
     );
 };
