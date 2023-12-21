@@ -75,6 +75,22 @@ const MyForm: React.FC = () => {
     coordinates: null,
   });
 
+  // suggestions when user types
+  const [titleSuggestions, setTitleSuggestions] = useState<string[]>([]);
+  
+  // accesses Nuthatch API 
+  const fetchTitleSuggestions = async (inputValue: string) => {
+    try {
+      const response = await axios.get(`https://nuthatch.lastelm.software/v2/birds?name=${inputValue}`, {headers: {'api-key': 'c381a016-3a46-4199-a28b-f40f3ec14141'}});
+      const entities = response.data.entities; // Assuming "entities" is the array in your API response
+      const suggestions = entities.filter((entity:any) => entity.name.toLowerCase().startsWith(inputValue.toLowerCase())).map((entity: any) => entity.name);      
+      setTitleSuggestions(suggestions);
+      } catch (error) {
+        console.error('Error fetching title suggestions:', error);
+        setTitleSuggestions([]);
+      }
+  };
+
   const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     // sets 250 character limit
@@ -82,11 +98,36 @@ const MyForm: React.FC = () => {
     {
       window.alert("Description shouldn't exceed 250 characters.");
     }
+    else if (name === 'title')
+    {
+      setFormData({ ...formData, [name]: value });
+      fetchTitleSuggestions(value);
+    }
     else
     {
       setFormData({ ...formData, [name]: value });
     }
   };
+
+  useEffect(() => {
+    // delay fetching suggestions to allow state to update
+    const delay = setTimeout(() => {
+      if (formData.title.trim() === '') {
+        setTitleSuggestions([]);
+      } else {
+        fetchTitleSuggestions(formData.title);
+      }
+    }, 200);
+
+    return () => clearTimeout(delay); // Clear the timeout if the component unmounts or the title changes
+  }, [formData.title]);
+
+  // handles title select
+  const handleTitleSelect = (selectedTitle: string) =>
+  {
+    setFormData({...formData, title: selectedTitle});
+    setTitleSuggestions([]);
+  }
 
   const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files && e.target.files[0];
@@ -131,7 +172,17 @@ const MyForm: React.FC = () => {
         Bird Species:
         <br />
         <input type="text" name="title" value={formData.title} onChange={handleInputChange} />
-      </label>
+        
+        {titleSuggestions.length > 0 && (
+          <ul>
+            {titleSuggestions.map((title, index) => (
+              <li key={index} onClick={() => handleTitleSelect(title)}>
+                {title}
+              </li>
+            ))}
+          </ul>
+        )}
+     </label>
       <br />
       <br />
       <label>
