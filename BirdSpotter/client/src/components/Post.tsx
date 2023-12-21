@@ -103,7 +103,7 @@ const MyForm: React.FC = () => {
   return (
     <form onSubmit={handleSubmit}>
       <label>
-        Title:
+        Bird Species:
         <input type="text" name="title" value={formData.title} onChange={handleInputChange} />
       </label>
       <br />
