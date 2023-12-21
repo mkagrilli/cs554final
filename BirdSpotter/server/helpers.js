@@ -26,6 +26,12 @@ export const isAlphanumericString = (arg, argName) => {
     }
 }
 
+export const checkNumber = (num) => {
+    if (!num) {throw 'You must provide a number for the ID you want'};
+    if(!(/^[0-9]+$/.test(String(num)))) {throw 'ID must only be made of numbers'};
+    return num;
+  }
+
 export const isValidEmail = (arg) => {
 	arg = isValidString(arg);
 	arg = arg.toLowerCase();

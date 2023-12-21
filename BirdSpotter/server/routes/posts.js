@@ -1,7 +1,11 @@
 import { Router } from 'express';
 import axios from 'axios';
 import multer from 'multer';
+import * as redis from 'redis';
+import * as helper from '../helpers.js';
+import { flatten, unflatten } from 'flat';
 
+const client = redis.createClient();
 const upload = multer();
 const router = Router();
 
@@ -13,6 +17,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 var api_key = 'cf69ccfea8804bfa99abb6fe78e8f6f0';
 
+// await client.connect();
 
 router.route('/').get(async (req, res) => {
     try {
@@ -22,19 +27,43 @@ router.route('/').get(async (req, res) => {
     }    
 });
 
+router.route('/page/:pagenum').get(async (req, res) => {
+    let pagenum;
+    try {
+      pagenum = helper.checkNumber(req.params.pagenum);
+    } catch (e) {
+      return res.status(400).json({error: e});
+    }
+    try {
+      
+      let exists = await client.exists('pagenum'+String(pagenum));
+      if (exists) {
+        console.log("exist");
+        let posts = await client.get('pagenum'+String(pagenum));
+        let unflatresults = unflatten(JSON.parse(posts));
+        res.status(200).json(unflatresults);
+      } else {
+        console.log("Does not exist");
+        let offset = 50 * (pagenum-1);
+        let data = await posts.getAll();
+        let flatresults = flatten(data);
+        let end = await client.set('pagenum'+String(pagenum),JSON.stringify(flatresults));
+        res.status(200).json(data);
+      }
+    } catch (e) {
+      return res.status(404).json({error: `Error: Could not find page`});
+    }
+  });
+
 router.route('/newpost').post(upload.single('image'), async (req, res) => {
     try {
-        console.log(req.body);
-        const { title, desc } = req.body; // Remove coordinates from here
+        const { title, desc, userId } = req.body; // Remove coordinates from here
         const image = req.file;
     
         const coordinates = [parseFloat(req.body.latitude), parseFloat(req.body.longitude)]; // Parse coordinates
     
         console.log('Received form data:', { title, desc, coordinates });
         console.log('Received image:', image);
-  
-      console.log('Received form data:', { title, desc });
-      console.log('Received image:', image);
   
       let latitude = coordinates[0];
       let longitude = coordinates[1];
@@ -55,8 +84,10 @@ router.route('/newpost').post(upload.single('image'), async (req, res) => {
   
       if (response.status === 200) {
         const data = response.data;
-        let location = data.results[0].components.city + ', ' + data.results[0].components.country;
-        const post = await posts.create(id, title, image, desc, location, [longitude, latitude]);
+        console.log("echo")
+        console.log(req.body)
+        let location = data.results[0].formatted;
+        const post = await posts.create(userId, title, image, desc, location, [latitude, longitude]);
         return res.status(200).json({ data: post });
       } else {
         console.log('Unable to geocode! Response code: ' + response.status);
@@ -65,6 +96,7 @@ router.route('/newpost').post(upload.single('image'), async (req, res) => {
       }
     }
     catch (e) {
+        console.log(e)
         return res.status(400).json({error: e.message});
     }
 });

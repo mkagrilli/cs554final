@@ -1,4 +1,4 @@
-import { v2 as cloudinary } from 'cloudinary';
+import cloudinary from 'cloudinary';
 import dotenv from 'dotenv';
 dotenv.config();
 
@@ -12,7 +12,7 @@ export const uploadImage = async (imageArr) => {
     let urlArr = [];
     try {
         for (let i = 0; i < imageArr.length; i++) {
-            let result = await cloudinary.uploader.upload(imageArr[i]);
+            let result = await cloudinary.v2.uploader.upload(imageArr[i]);
             urlArr.push(result.url);
         }
         return urlArr;
