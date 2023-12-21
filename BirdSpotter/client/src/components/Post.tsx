@@ -130,8 +130,17 @@ const MyForm: React.FC = () => {
   }
 
   const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files && e.target.files[0];
-    setFormData({ ...formData, image: file });
+    const files = e.target.files;
+  if (!files || files.length === 0) {
+    window.alert("Please select an image.");
+    return;
+  }
+  if (files.length > 1) {
+    window.alert("Please select only one image.");
+    return;
+  }
+  const file = files[0];
+  setFormData({ ...formData, image: file });
   };
 
   const handleCoordinatesChange = (coordinates: [number, number]) => {
@@ -140,6 +149,25 @@ const MyForm: React.FC = () => {
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (!formData.title.trim()) {
+        window.alert("Please enter a title.");
+        return;
+      }
+    
+      if (!formData.desc) {
+        window.alert("Please enter a description.");
+        return;
+      }
+
+      if (!formData.coordinates) {
+        window.alert("Please select coordinates on the map.");
+        return;
+      }
+    
+      if (!formData.image) {
+        window.alert("Please upload an image.");
+        return;
+      }
 
     try {
       const form = new FormData();
@@ -154,6 +182,8 @@ const MyForm: React.FC = () => {
         form.append('latitude', formData.coordinates[0].toString());
         form.append('longitude', formData.coordinates[1].toString());
       }
+
+      
 
       const response = await axios.post<{ data: any }>('http://localhost:3000/posts/newpost', form, {
         headers: {
