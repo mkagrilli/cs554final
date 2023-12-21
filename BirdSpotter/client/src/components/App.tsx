@@ -12,9 +12,11 @@ import Sighting from './Sighting'
 import Register from './Register'
 import { useAuth0 } from "@auth0/auth0-react";
 import axios from 'axios';
+import { useCookies } from 'react-cookie';
 import Display from './Display';
 
 function App() {
+    const [cookies, setCookie] = useCookies(['userId'])
     let { user, isAuthenticated } = useAuth0();
     const navigate = useNavigate();
     const handleRedirect = () => {
@@ -29,9 +31,13 @@ function App() {
                 handleRedirect();
                 console.log('User is authenticated but not registered');
             } else {
-                console.log('User is authenticated and registered');
+              console.log('User is authenticated and registered');
+              const data = (await axios.get(`http://localhost:3000/users/authid/${user.sub}`)).data.data
+              setCookie('userId', data._id)
+              console.log('User is authenticated and registered');
             }
         } else {
+          setCookie('userId', null)
           console.log('User is not authenticated');
         }
     };

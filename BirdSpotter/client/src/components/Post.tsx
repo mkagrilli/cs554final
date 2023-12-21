@@ -75,8 +75,9 @@ const MyForm: React.FC = () => {
     coordinates: null,
   });
 
-  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
+    // sets 250 character limit
     if(name === 'desc' && value.length === 250)
     {
       window.alert("Description shouldn't exceed 250 characters.");
@@ -128,13 +129,15 @@ const MyForm: React.FC = () => {
     <form onSubmit={handleSubmit}>
       <label>
         Bird Species:
+        <br />
         <input type="text" name="title" value={formData.title} onChange={handleInputChange} />
       </label>
       <br />
       <br />
       <label>
         Description:
-        <input type="text" name="desc" maxLength = {250} value={formData.desc} onChange={handleInputChange} />
+        <br />
+        <textarea placeholder = "Describe the bird here..." name="desc" maxLength = {250} rows = {5} cols = {40} value={formData.desc} onChange={handleInputChange} />
       </label>
       <br />
       <br />

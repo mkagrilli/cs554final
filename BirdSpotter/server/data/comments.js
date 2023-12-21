@@ -79,7 +79,13 @@ export const addUpvote = async (commentId, userId) => {
 			comments[i]._id = new ObjectId(comments[i]._id)
 		}
 		const postCollection = await posts();
-		await postCollection.findOneAndUpdate({_id: new ObjectId(commentObj.postId)}, {$set: { comments: comments} }, {returnDocument: 'after'});
+		let upvoted = await postCollection.findOneAndUpdate({_id: new ObjectId(commentObj.postId)}, {$set: { comments: comments} }, {returnDocument: 'after'});
+		if (!upvoted) {
+			return false
+		}
+		else {
+			return true
+		}
 	} else {
 		console.log("A commenter attempted to upvote their own comment.")
 	}
@@ -106,7 +112,13 @@ export const addDownvote = async (commentId, userId) => {
 			comments[i]._id = new ObjectId(comments[i]._id)
 		}
 		const postCollection = await posts();
-		await postCollection.findOneAndUpdate({_id: new ObjectId(commentObj.postId)}, {$set: { comments: comments} }, {returnDocument: 'after'});
+		let downvoted = await postCollection.findOneAndUpdate({_id: new ObjectId(commentObj.postId)}, {$set: { comments: comments} }, {returnDocument: 'after'});
+		if (!downvoted) {
+			return false
+		}
+		else {
+			return true
+		}
 	} else {
 		console.log("A commenter attempted to downvote their own comment.")
 	}
