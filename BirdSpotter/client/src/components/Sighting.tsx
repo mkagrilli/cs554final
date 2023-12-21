@@ -1,6 +1,7 @@
 import './App.css'
 import {useState, useEffect} from 'react'
 import {useParams} from 'react-router-dom'
+import noImage from '../assets/downloaded.jpeg';
 import axios from 'axios'
 import Comment from './Comment'
 import AddComment from './AddComment'
@@ -31,7 +32,11 @@ function Sighting() {
             <div className='sightingBody'>
                 <h3 className='postTitle'>{sighting.title}</h3>
                 <br/>
-                <img src={sighting.imageUrl[0]}/>
+                {sighting.imageUrl.length > 0 ? (
+                    <img src={sighting.imageUrl[0]} alt={sighting.title} />
+                ) : (
+                    <img src={noImage}  alt={sighting.title}/>
+                )}
                 <br/>
                 <br/>
                 <h4>Comments</h4>

@@ -15,7 +15,6 @@ const LeafletMap: React.FC<{ onCoordinatesChange: (coordinates: [number, number]
   onCoordinatesChange,
 }) => {
   let { user, isAuthenticated } = useAuth0();
-    const [userData, setUserData] = useState<Record<string, any>>({});
     useEffect(() => {
         const getUserData = async () => {
             if (isAuthenticated && user) {
@@ -24,7 +23,6 @@ const LeafletMap: React.FC<{ onCoordinatesChange: (coordinates: [number, number]
                 if (userIsRegistered) {
                     console.log('User is authenticated and registered');
                     const data = (await axios.get(`http://localhost:3000/users/authid/${user.sub}`)).data.data
-                    setUserData(data);
                     console.log(data)
                 }
             }

@@ -4,7 +4,7 @@ import axios from 'axios';
 import { Link } from 'react-router-dom';
 import DisplayCard from './DisplayCard'; 
 import { useParams, useNavigate } from 'react-router-dom';
-import { Card, Grid } from '@mui/material';
+import { Grid } from '@mui/material';
 
 import '../components/App.css';
 
@@ -23,7 +23,6 @@ const Display: React.FC = () => {
   const pageNumber = Number(page);
   const [loading, setLoading] = useState(true);
   const [postData, setPostData] = useState<Post[] | undefined>();
-  const [totalAmount, setTotalAmount] = useState<number | undefined>();
   const [pageNumberState, setPageNumber] = useState(pageNumber);
   const [nextButton, setNextButton] = useState(true);
   const [prevButton, setPrevButton] = useState(false);
@@ -49,22 +48,20 @@ const Display: React.FC = () => {
   useEffect(() => {
     setPageNumber(pageNumber);
   }, [pageNumber]);
-
+  
   useEffect(() => {
     console.log('on load useeffect');
     setPostData(undefined);
-
+  
     async function fetchData() {
       try {
         setPageNumber(pageNumberState);
         const { data } = await axios.get(`http://localhost:3000/posts/page/${pageNumberState}`);
-        setTotalAmount(Object.keys(data).length);
-        let tot = Object.keys(data).length;
-        setTotalAmount(tot);
+        let tot = Object.keys(data).length;  
         let results: Post[] = [];
         let max;
-        if (totalAmount && totalAmount < 50) {
-          max = totalAmount;
+        if (tot && tot < 50) {
+          max = tot;
           setNextButton(false);
         } else {
           max = 50;
@@ -75,7 +72,7 @@ const Display: React.FC = () => {
         } else {
           setPrevButton(true);
         }
-        results =  Object.values(data);
+        results = Object.values(data);
         set400(false);
         set404(false);
         setPostData(results);
@@ -85,7 +82,7 @@ const Display: React.FC = () => {
         return;
       }
     }
-
+  
     fetchData();
   }, [pageNumberState]);
 

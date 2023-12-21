@@ -1,5 +1,4 @@
-import React from 'react';
-import noImage from '../assets/download.jpeg';
+import noImage from '../assets/downloaded.jpeg';
 import { Link } from 'react-router-dom';
 import {
   Card,
@@ -39,7 +38,7 @@ function DisplayCard({ post }: DisplayCardProps) {
         }}
       >
         <CardActionArea>
-          <Link to={`/posts/${post._id}`}>
+          <Link to={`/post/${post._id}`}>
             <CardMedia
               sx={{
                 height: '100%',
