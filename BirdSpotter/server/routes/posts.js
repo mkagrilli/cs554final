@@ -63,16 +63,11 @@ router.route('/newpost').post(upload.single('image'), async (req, res) => {
         console.log('Error message: ' + response.data.status.message);
         return res.status(500).json({ error: 'Internal Server Error' });
       }
-// router.route('/newpost').post(async (req, res) => {
-//     try {
-//         let postInfo = req.body;
-
-//         const post = await posts.create()
-//         return res.status(200).json({data: await users.get(req.params.id)});
-//     } catch (e) {
-//         return res.status(400).json({error: e.message});
-//     }
-// });
+    }
+    catch (e) {
+        return res.status(400).json({error: e.message});
+    }
+});
 
 router.route('/:id').get(async (req, res) => {
     try {
