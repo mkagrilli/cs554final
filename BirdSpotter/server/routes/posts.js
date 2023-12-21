@@ -9,6 +9,7 @@ const client = redis.createClient();
 const upload = multer();
 const router = Router();
 
+import * as helpers from '../helpers.js'
 import * as posts from '../data/posts.js';
 import * as comments from '../data/comments.js';
 import { ObjectId } from 'mongodb';
@@ -112,11 +113,13 @@ router.route('/:id').get(async (req, res) => {
 .post(async (req, res) => {
         const postId = req.params.id
         const comment = req.body
-        const userId = "6583386c02d40519dff254b6"
+        const userId = comment.userId
         let body = comment.body
         let classification = comment.classification
     try {
-        console.log('hi')
+        if (!postId || !comment || !body || !classification || !userId) {
+            throw new Error("Error: must provide all fields")
+        }
          //placeholder, will be retrieved via express-session cookie
         body = helpers.isValidString(body, 'body');
         classification = helpers.isValidString(classification, 'classification')
@@ -125,7 +128,7 @@ router.route('/:id').get(async (req, res) => {
         if (!ObjectId.isValid(postId)) {throw new Error("Error: invalid object ID")};
 	    if (!ObjectId.isValid(userId)) {throw new Error("Error: invalid object ID")};
     }catch(e) {
-        console.log(e.response.config.headers)
+        console.log(e)
         console.log('error')
         return res.status(400).json({error: e.message});
     }
@@ -141,5 +144,52 @@ router.route('/:id').get(async (req, res) => {
         return res.status(500).json({error: e})
     }
   });
+
+router.route('/:postId/comments/:commentId')
+  .put(async (req, res) => {
+    //console.log('voting')
+    const commentId = req.params.commentId
+    const body = req.body
+    let userId = req.body.userId
+    let type = req.body.type
+    let good = true
+   // console.log(type)
+    
+    try {
+        if (type !== 'upvote' && type !== 'downvote') {
+            throw `Error: must provide type as either upvote or downvote`
+        }
+        if (!ObjectId.isValid(commentId)) {throw new Error("Error: invalid object ID")};
+	    if (!ObjectId.isValid(userId)) {throw new Error("Error: invalid object ID")};
+    }catch(e) {
+        console.log(e)
+        good = false
+        return res.status(400).json({error: e})
+    }
+    if(good) {
+        try {
+            if (type == "upvote") {
+                let upvoted = await comments.addUpvote(commentId, userId)
+                if (!upvoted) {
+                    throw `could not upvote post`
+                }
+                else {
+                    return res.status(200).json({upvoted: true})
+                }
+            }
+            else if (type == "downvote") {
+                let downvoted = await comments.addDownvote(commentId, userId)
+                if (!downvoted) {
+                    throw `could not downvote post`
+                }
+                else {
+                    return res.status(200).json({downvoted: true})
+                }
+            }
+        }catch(e) {
+            return res.status(500).json({error: e})
+        }
+    } 
+  })
 
 export default router;
