@@ -3,8 +3,8 @@ import axios from 'axios';
 import { MapContainer, TileLayer, Marker, Popup} from 'react-leaflet';
 import { useAuth0 } from "@auth0/auth0-react";
 
-
 interface FormData {
+  userId: string;
   title: string;
   desc: string;
   image: File | null;
@@ -30,29 +30,28 @@ const LeafletMap: React.FC<{ onCoordinatesChange: (coordinates: [number, number]
     </>
   );
 };
-//Brandons Auth0 stuff ---------------------------------------------------
-const MyForm: React.FC = () => {
-    let { user, isAuthenticated } = useAuth0();
-    const [userData, setUserData] = useState<Record<string, any>>({});
-    useEffect(() => {
-        const getUserData = async () => {
-            if (isAuthenticated && user) {
-                const data = { authId: user.sub };
-                const userIsRegistered = (await axios.post(`http://localhost:3000/users/checkIfRegistered`, data)).data.isRegistered;
-                if (userIsRegistered) {
-                    console.log('User is authenticated and registered');
-                    const data = (await axios.get(`http://localhost:3000/users/authid/${user.sub}`)).data.data
-                    setUserData(data);
-                    console.log(data)
-                }
-            }
-        };
-        getUserData();
-    }, [isAuthenticated, user]);
 
-//-----------------------------------------------------------------------
+const MyForm: React.FC = () => {
+  let { user, isAuthenticated } = useAuth0();
+  const [userData, setUserData] = useState<Record<string, any>>({});
+  useEffect(() => {
+    const getUserData = async () => {
+      if (isAuthenticated && user) {
+        const data = { authId: user.sub };
+        const userIsRegistered = (await axios.post(`http://localhost:3000/users/checkIfRegistered`, data)).data.isRegistered;
+        if (userIsRegistered) {
+          console.log('User is authenticated and registered');
+          const data = (await axios.get(`http://localhost:3000/users/authid/${user.sub}`)).data.data
+          setUserData(data);
+          console.log(data)
+        }
+      }
+    };
+    getUserData();
+  }, [isAuthenticated, user]);
 
   const [formData, setFormData] = useState<FormData>({
+    userId: userData.userId || '', // Add userId from userData if available
     title: '',
     desc: '',
     image: null,
@@ -78,6 +77,7 @@ const MyForm: React.FC = () => {
 
     try {
       const form = new FormData();
+      form.append('userId', formData.userId); // Include userId in the form data
       form.append('title', formData.title);
       form.append('desc', formData.desc);
       if (formData.image) {
