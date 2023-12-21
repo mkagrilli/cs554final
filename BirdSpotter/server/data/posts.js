@@ -1,7 +1,7 @@
 import {posts} from '../config/mongoCollections.js';
 import {ObjectId} from 'mongodb';
 import * as helpers from '../helpers.js';
-import * as cloud from '../utils/cloudinary.js'
+import * as cloud from '../utils/cloudinary.js';
 import fs from 'fs';
 import path from 'path';
 import {fileURLToPath} from 'url';
@@ -15,24 +15,20 @@ export const create = async (userId, title, imageUrl, description, location, coo
 	if (title.length < 5) {
 		throw new Error("Error: title must be at least 5 characters long.")
 	}
-
 	if (!ObjectId.isValid(userId)) {throw new Error("Error: invalid object ID.")};
 	let Allimages = imageUrl //req.files.imageInput
 	let paths = [];
-	imageUrl = helpers.isValidString(imageUrl);
 	description = helpers.isValidString(description);
 	location = helpers.isValidString(location);
-	//coordinates = helpers.isValidString(coordinates);
-
 	//IMAGE
 	//----------------------
 	if (Array.isArray(Allimages)){
-		for(let x of req.files.imageInput){
+		for(let x of Allimages){
 			if(x.mimetype === "image/jpeg" || x.mimetype === "image/png" || x.mimetype === "image/jpg" || x.mimetype === "jpeg/jpg" || x.mimetype === "jpg/jpeg"){
 				const image = x;
-			const writeStream = fs.createWriteStream(path.join(__dirname, '..', 'uploads', image.name));
-			paths.push(path.join(__dirname, '..', 'uploads', image.name));
-			await writeStream.write(image.data);
+			const writeStream = fs.createWriteStream(path.join(__dirname, '..', 'uploads', image.originalname));
+			paths.push(path.join(__dirname, '..', 'uploads', image.originalname));
+			await writeStream.write(image.buffer);
 			await writeStream.end(); 
 			}
 			else{
@@ -54,15 +50,14 @@ export const create = async (userId, title, imageUrl, description, location, coo
 	else{
 			if(Allimages.mimetype === "image/jpeg" || Allimages.mimetype === "image/png" || Allimages.mimetype === "image/jpg" || Allimages.mimetype === "jpeg/jpg" || Allimages.mimetype === "jpg/jpeg"){
 				const image = Allimages;
-				let x = path.join(__dirname, '..', 'uploads', image.name);
+				let x = path.join(__dirname, '..', 'uploads', image.originalname);
 				const writeStream = fs.createWriteStream(x);
-				paths.push(path.join(__dirname, '..', 'uploads', image.name));
-				await writeStream.write(image.data);
+				paths.push(path.join(__dirname, '..', 'uploads', image.originalname));
+				await writeStream.write(image.buffer);
 				await writeStream.end();
 			}
 			else{
 				let pathway = path.join(__dirname, '..', 'uploads');
-			//console.log(listing);
 			fs.readdir(pathway, (err, files) => {
 				if (err) throw err;
 				for( let x of files){
