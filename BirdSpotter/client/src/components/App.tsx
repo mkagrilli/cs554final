@@ -12,6 +12,7 @@ import Sighting from './Sighting'
 import Register from './Register'
 import { useAuth0 } from "@auth0/auth0-react";
 import axios from 'axios';
+import Display from './Display';
 
 function App() {
     let { user, isAuthenticated } = useAuth0();
@@ -57,6 +58,8 @@ function App() {
           <nav>
             <NavLink className='navlink' to='/'>Home</NavLink>
             <br/>
+            <NavLink className='navlink' to='/posts/page/1'>Go and look at some birds</NavLink>
+            <br/>
             <NavLink className='navlink' to='/post'>Post a Sighting!</NavLink>
             <br/>
             <NavLink className='navlink' to='/profile'>View Profile Info</NavLink>
@@ -67,6 +70,7 @@ function App() {
         </header>
         <Routes>
           <Route path='/' element={<Home/>}/>
+          <Route path='/posts/page/:page' element={<Display/>}/>
           <Route path='/post' element={<Post/>}/>
           <Route path='/profile' element={<Profile/>}/>
           <Route path='/map' element={<MainMap/>}/>

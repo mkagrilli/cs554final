@@ -2,6 +2,8 @@ import { Router } from 'express';
 import axios from 'axios';
 import multer from 'multer';
 import * as redis from 'redis';
+import * as helper from '../helpers.js';
+import { flatten, unflatten } from 'flat';
 
 const client = redis.createClient();
 const upload = multer();
@@ -35,10 +37,12 @@ router.route('/page/:pagenum').get(async (req, res) => {
       
       let exists = await client.exists('pagenum'+String(pagenum));
       if (exists) {
+        console.log("exist");
         let posts = await client.get('pagenum'+String(pagenum));
         let unflatresults = unflatten(JSON.parse(posts));
         res.status(200).json(unflatresults);
       } else {
+        console.log("Does not exist");
         let offset = 50 * (pagenum-1);
         let data = await posts.getAll();
         let flatresults = flatten(data);
