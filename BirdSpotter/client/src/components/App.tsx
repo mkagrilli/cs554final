@@ -45,7 +45,7 @@ function App() {
       <div>
         <header className='App-header'>
           <h1 className='title'>
-            Bird Sightings
+            BirdSpotter
           </h1>
           {isAuthenticated ? (
             <Logout />
