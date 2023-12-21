@@ -16,10 +16,10 @@ await db.dropDatabase();
 // Creation
 
 const user1 = await users.create("auth0|657694419fa97e13efcf9027", "brecksit", "brecksit@gmail.com")
-const user2 = await users.create("echrow", "echrow@gmail.com")
-const user3 = await users.create("linkinparkfan", "linkinparkfan@gmail.com")
-const user4 = await users.create("john_cotton", "jcottonvat19@gmail.com")
-const user5 = await users.create("muteki", "lmuhnicky@gmail.com")
+const user2 = await users.create("auth0|740683hf83nh03ng8238g843", "echrow", "echrow@gmail.com")
+const user3 = await users.create("auth0|73khw9184027f937t9jg93j5", "linkinparkfan", "linkinparkfan@gmail.com")
+const user4 = await users.create("auth0|607593769d83hg04uh94ht96", "john_cotton", "jcottonvat19@gmail.com")
+const user5 = await users.create("auth0|7395jg9795010674hg94bhg9", "muteki", "lmuhnicky@gmail.com")
 
 const post1 = await posts.create(user1._id, "Raven I think?", "https://cdn.download.ams.birds.cornell.edu/api/v1/asset/85864161/1800", "I think its a raven, but might also be a crow. I also don't know specific breeds as well.", "Brooklyn, NY", [40.688096, -73.942343]);
 

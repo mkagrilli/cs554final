@@ -1,14 +1,14 @@
 {
-    "name": "cs-554-lab-2",
+    "name": "cs-554-final-project",
     "version": "1.0.0",
-    "description": "Redis Lab",
+    "description": "CS554 Final Project - BirdSpotter",
     "main": "app.js",
     "type": "module",
     "scripts": {
         "start": "node app.js",
         "test": "echo \"Error: no test specified\" && exit 1"
     },
-    "author": "Brandon Leung [10458237]",
+    "author": "Joe Grosso, Liam Concannon, Brandon Leung, Michelle Grilli",
     "license": "MIT",
     "dependencies": {
         "axios": "^0.27.2",
