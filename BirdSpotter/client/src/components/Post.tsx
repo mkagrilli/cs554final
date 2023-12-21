@@ -60,7 +60,14 @@ const MyForm: React.FC = () => {
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    if(name === 'desc' && value.length === 250)
+    {
+      window.alert("Description shouldn't exceed 250 characters.");
+    }
+    else
+    {
+      setFormData({ ...formData, [name]: value });
+    }
   };
 
   const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -110,7 +117,7 @@ const MyForm: React.FC = () => {
       <br />
       <label>
         Description:
-        <input type="text" name="desc" value={formData.desc} onChange={handleInputChange} />
+        <input type="text" name="desc" maxLength = {250} value={formData.desc} onChange={handleInputChange} />
       </label>
       <br />
       <br />
