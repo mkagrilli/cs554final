@@ -25,6 +25,10 @@ const CheckIfRegistered: React.FC = () => {
         }
         checkIfRegistered();
   }, [isAuthenticated]);
+
+  return (
+    isAuthenticated
+  )
 };
 
 export default CheckIfRegistered;

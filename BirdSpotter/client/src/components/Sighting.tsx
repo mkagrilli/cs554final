@@ -17,7 +17,7 @@ function Sighting() {
             setSighting(data.data)
             if (data.data.comments.length !== 0) {
                 let comms = data.data.comments.map((comms: any) => {
-                    return (<Comment comment={comms} key={comms._id}/>)
+                    return ((<div><Comment comment={comms} key={comms._id}/><br/></div>))
                 })
                 setComments(comms)
                 setIs(true)
@@ -31,9 +31,10 @@ function Sighting() {
             <div className='sightingBody'>
                 <h3 className='postTitle'>{sighting.title}</h3>
                 <br/>
-                <img src={sighting.imageUrl}/>
+                <img src={sighting.imageUrl[0]}/>
                 <br/>
                 <br/>
+                <h4>Comments</h4>
                 {isComments && comments}
                 <span>Disagree with the poster's bird identification? </span>
                 <button onClick={() => setToggle(!toggleCom)}>submit your own with a comment</button>
