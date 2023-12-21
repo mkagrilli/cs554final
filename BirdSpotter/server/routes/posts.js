@@ -16,7 +16,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 var api_key = 'cf69ccfea8804bfa99abb6fe78e8f6f0';
 
-// await client.connect();
+await client.connect();
 
 router.route('/').get(async (req, res) => {
     try {
@@ -34,7 +34,6 @@ router.route('/page/:pagenum').get(async (req, res) => {
       return res.status(400).json({error: e});
     }
     try {
-      
       let exists = await client.exists('pagenum'+String(pagenum));
       if (exists) {
         console.log("exist");
