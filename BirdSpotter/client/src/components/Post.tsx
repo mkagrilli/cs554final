@@ -141,6 +141,13 @@ const MyForm: React.FC = () => {
     window.alert("Please select an image.");
     return;
   }
+  const fileSize = files.size;
+  const maxSize = 10 * 1024 * 1024;
+
+  if (fileSize > maxSize) {
+    window.alert("Image size exceeds 10MB. Please choose a smaller file.");
+    return;
+  }
   const file = files;
   setFormData({ ...formData, image: file });
   };
