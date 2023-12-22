@@ -7,7 +7,6 @@ function AddComment(props: any) {
     const [formData, setFormData] = useState({body: '', classification: ''})
     const [error, setErr] = useState<null | any>(null)
     const [cookies, setCookie] = useCookies(['userId'])
-    const [searchTerm, setTerm] = useState<any>(null);
     const [results, setResults] = useState<any>(null)
     const [searchErr, setSErr] = useState<any>(null)
     const [selected, setSelected] = useState<any>(null)
