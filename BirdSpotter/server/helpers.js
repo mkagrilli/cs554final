@@ -1,12 +1,3 @@
-/*******************************************************************************
- * Name        : helpers.js
- * Author      : Brandon Leung
- * Date        : March 25, 2023
- * Description : Lab 6 helper function implementation.
- * Pledge      : I pledge my honor that I have abided by the Stevens Honor System.
- ******************************************************************************/
-// You can add and export any helper functions you want here. If you aren't using any, then you can just leave this file as is.
-
 export const isValidString = (arg, argName) => { // Universal
     if (!isValidString) {throw new Error(`Error: the ${argName} parameter does not exist.`)}
     if (typeof arg === "undefined" || !arg) {throw new Error(`Error: the ${argName} parameter is undefined.`)}

@@ -1,10 +1,3 @@
-/************************************************************************************
- * Name        : seed.js
- * Author      : Brandon Leung
- * Date        : March 25, 2023
- * Description : Lab 6 seed function implementation.
- * Pledge      : I pledge my honor that I have abided by the Stevens Honor System.
- ***********************************************************************************/
 import {dbConnection, closeConnection} from './config/mongoConnection.js';
 import * as users from './data/users.js';
 import * as posts from './data/posts.js';
@@ -16,7 +9,6 @@ await db.dropDatabase();
 // Creation
 
 const user1 = await users.create("auth0|657694419fa97e13efcf9027", "brecksit", "brecksit@gmail.com")
-
 const user2 = await users.create("auth0|740683hf83nh03ng8238g843", "echrow", "echrow@gmail.com")
 const user3 = await users.create("auth0|73khw9184027f937t9jg93j5", "linkinparkfan", "linkinparkfan@gmail.com")
 const user4 = await users.create("auth0|607593769d83hg04uh94ht96", "john_cotton", "jcottonvat19@gmail.com")
