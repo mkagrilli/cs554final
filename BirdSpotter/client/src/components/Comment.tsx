@@ -3,6 +3,7 @@ import {useState, useEffect} from 'react'
 import axios from 'axios'
 import { useCookies } from 'react-cookie'
 import { useParams } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 
 function Comment(props: any) {
     let {id} = useParams()
@@ -16,6 +17,7 @@ function Comment(props: any) {
     const [voteErr, setVErr] = useState<any>(undefined)
     const [votes, setVotes] = useState(comment.upvotes.length - comment.downvotes.length)
     const [isUsers, setIs] = useState(false);
+    const [birdLink, setLink] = useState<any>(null)
     useEffect(() => {
         if (cookies.userId) {
             if (comment.upvotes.includes(cookies.userId)) {
@@ -32,8 +34,9 @@ function Comment(props: any) {
             try {
                 const {data} = await axios.get(`http://localhost:3000/users/${uid}`) 
                 setUser(data.data)
-                let classification = await axios.get(`https://nuthatch.lastelm.software/birds/${comment.classification}`, {headers: {accept: 'application/json', 'API-Key': '5740c2e1-3293-45b3-a215-31edafa6d2d6'}})
+                let classification:any = await axios.get(`https://nuthatch.lastelm.software/birds/${comment.classification}`, {headers: {accept: 'application/json', 'API-Key': '5740c2e1-3293-45b3-a215-31edafa6d2d6'}})
                 classification = classification.data
+                setLink(`/bird/${classification.id}`)
                 setBird(classification)
             } catch (e) {
                 setErr('Error retrieving data')
@@ -111,7 +114,7 @@ function Comment(props: any) {
             <div className="commentDiv">
                 <span>{user.username}: {comment.body}</span>
                 <br/>
-                <span>Bird Classification: {bird && bird.name} | votes: {votes}</span>
+                <span>Bird Classification: <NavLink to={birdLink}>{bird && bird.name}</NavLink> | votes: {votes}</span>
                 <div>{!isUsers && (<div><button className="Upvote" onClick={() => upvote(cookies.userId)}>{hasUpvoted?(<div>upvoted</div>): (<div>upvote</div>)}</button>
                 <button className="Downvote" onClick={() => downvote(cookies.userId)}>{hasDownvoted?(<div>downvoted</div>): (<div>downvote</div>)}</button><div className='error'>{voteErr && voteErr}</div></div>)}</div>
                 <span>_______________________________________</span>
