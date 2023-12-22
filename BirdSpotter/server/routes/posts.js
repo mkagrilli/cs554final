@@ -174,8 +174,9 @@ router.route('/newpost').post(upload.single('image'), async (req, res) => {
         let images = await cloud.uploadImage(paths);
         const post = await posts.create(userId, title, images, desc, location, [latitude, longitude]);
         let amount = await posts.getPostCount();
-        let pages = amount/20;
+        let pages = Math.ceil(amount / 20)//amount/20;
         let x = 1;
+        console.log("page:" + pages)
         while(x<=pages){
             await client.del('pagenum' + String(x));
             x++;
