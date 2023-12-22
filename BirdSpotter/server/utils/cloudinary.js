@@ -10,6 +10,7 @@ cloudinary.config({
 
 export const uploadImage = async (imageArr) => {
     let urlArr = [];
+    console.log(imageArr);
     try {
         for (let i = 0; i < imageArr.length; i++) {
             let result = await cloudinary.v2.uploader.upload(imageArr[i]);

@@ -2,7 +2,9 @@ import {posts} from '../config/mongoCollections.js';
 import {ObjectId} from 'mongodb';
 import * as helpers from '../helpers.js';
 import * as cloud from '../utils/cloudinary.js';
+import { promisify } from 'util';
 import fs from 'fs';
+const readdirAsync = promisify(fs.readdir);
 import path from 'path';
 import {fileURLToPath} from 'url';
 const __filename = fileURLToPath(import.meta.url);
@@ -16,20 +18,28 @@ export const create = async (userId, title, imageUrl, description, location, coo
 		throw new Error("Error: title must be at least 5 characters long.")
 	}
 	if (!ObjectId.isValid(userId)) {throw new Error("Error: invalid object ID.")};
-	let Allimages = imageUrl //req.files.imageInput
+	let Allimages = imageUrl 
 	let paths = [];
 	description = helpers.isValidString(description);
 	location = helpers.isValidString(location);
-	//IMAGE
-	//----------------------
+
 	if (Array.isArray(Allimages)){
-		for(let x of Allimages){
-			if(x.mimetype === "image/jpeg" || x.mimetype === "image/png" || x.mimetype === "image/jpg" || x.mimetype === "jpeg/jpg" || x.mimetype === "jpg/jpeg"){
-				const image = x;
-			const writeStream = fs.createWriteStream(path.join(__dirname, '..', 'uploads', image.originalname));
-			paths.push(path.join(__dirname, '..', 'uploads', image.originalname));
-			await writeStream.write(image.buffer);
-			await writeStream.end(); 
+		await Promise.all(
+            Allimages.map(async (x) => {
+                if (
+                    x.mimetype === 'image/jpeg' ||
+                    x.mimetype === 'image/png' ||
+                    x.mimetype === 'image/jpg' ||
+                    x.mimetype === 'jpeg/jpg' ||
+                    x.mimetype === 'jpg/jpeg'
+                ) {
+                    const image = x;
+                    const imagePath = path.join(__dirname, '..', 'uploads', image.originalname);
+                    paths.push(imagePath);
+
+                    const writeStream = fs.createWriteStream(imagePath);
+                    await writeStream.write(image.buffer);
+                    await writeStream.end();
 			}
 			else{
 				let pathway = path.join(__dirname, '..', 'uploads');
@@ -45,16 +55,24 @@ export const create = async (userId, title, imageUrl, description, location, coo
 					}
 				});
 			}
-		}
+		})
+		);
 	}
 	else{
-			if(Allimages.mimetype === "image/jpeg" || Allimages.mimetype === "image/png" || Allimages.mimetype === "image/jpg" || Allimages.mimetype === "jpeg/jpg" || Allimages.mimetype === "jpg/jpeg"){
-				const image = Allimages;
-				let x = path.join(__dirname, '..', 'uploads', image.originalname);
-				const writeStream = fs.createWriteStream(x);
-				paths.push(path.join(__dirname, '..', 'uploads', image.originalname));
-				await writeStream.write(image.buffer);
-				await writeStream.end();
+		if (
+            imageUrl.mimetype === 'image/jpeg' ||
+            imageUrl.mimetype === 'image/png' ||
+            imageUrl.mimetype === 'image/jpg' ||
+            imageUrl.mimetype === 'jpeg/jpg' ||
+            imageUrl.mimetype === 'jpg/jpeg'
+        ) {
+            const image = imageUrl;
+            const imagePath = path.join(__dirname, '..', 'uploads', image.originalname);
+            paths.push(imagePath);
+
+            const writeStream = fs.createWriteStream(imagePath);
+            await writeStream.write(image.buffer);
+            await writeStream.end();
 			}
 			else{
 				let pathway = path.join(__dirname, '..', 'uploads');
@@ -72,11 +90,13 @@ export const create = async (userId, title, imageUrl, description, location, coo
 			}
 		
 	}
+	const uploadFolderPath = path.join(__dirname, '..', 'uploads');
+    const files = await readdirAsync(uploadFolderPath);
+    console.log('Contents of the "uploads" folder:', files);
 	let images = await cloud.uploadImage(paths);
-	//----------------------
 
 	let newPost= {
-		userId: new ObjectId("6583386c02d40519dff254b6"), //userId,
+		userId: new ObjectId(userId),
 		title: title,
 		imageUrl: images,
 		description: description,
@@ -90,9 +110,7 @@ export const create = async (userId, title, imageUrl, description, location, coo
 	if (!insertInfo.acknowledged || !insertInfo.insertedId) {throw new Error("Error: unable to add post.")}
 	const newId = insertInfo.insertedId.toString();
 	const post = await get(newId);
-	
-	//removing images
-	//--------------------
+
 	let pathway = path.join(__dirname, '..', 'uploads');
                         fs.readdir(pathway, (err, files) => {
                             if (err) throw err;
@@ -105,7 +123,6 @@ export const create = async (userId, title, imageUrl, description, location, coo
                             }
                             }
                         });
-	//--------------------
 
 	return post;
 };

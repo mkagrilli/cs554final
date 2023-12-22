@@ -46,7 +46,7 @@ function DisplayCard({ post }: DisplayCardProps) {
               }}
               component='img'
               image={
-                post.imageUrl.length > 0
+                post.imageUrl && post.imageUrl.length > 0
                   ? post.imageUrl[0]
                   : noImage
               }

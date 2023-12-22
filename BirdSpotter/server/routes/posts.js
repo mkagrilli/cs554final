@@ -56,10 +56,10 @@ router.route('/page/:pagenum').get(async (req, res) => {
 
 router.route('/newpost').post(upload.single('image'), async (req, res) => {
     try {
-        const { title, desc, userId } = req.body; // Remove coordinates from here
+        const { title, desc, userId } = req.body;
         const image = req.file;
     
-        const coordinates = [parseFloat(req.body.latitude), parseFloat(req.body.longitude)]; // Parse coordinates
+        const coordinates = [parseFloat(req.body.latitude), parseFloat(req.body.longitude)];
     
         console.log('Received form data:', { title, desc, coordinates });
         console.log('Received image:', image);
@@ -87,6 +87,7 @@ router.route('/newpost').post(upload.single('image'), async (req, res) => {
         console.log(req.body)
         let location = data.results[0].formatted;
         const post = await posts.create(userId, title, image, desc, location, [latitude, longitude]);
+        await client.flushAll();
         return res.status(200).json({ data: post });
       } else {
         console.log('Unable to geocode! Response code: ' + response.status);
@@ -119,7 +120,6 @@ router.route('/:id').get(async (req, res) => {
         if (!postId || !comment || !body || !classification || !userId) {
             throw new Error("Error: must provide all fields")
         }
-         //placeholder, will be retrieved via express-session cookie
         body = helpers.isValidString(body, 'body');
         classification = helpers.isValidString(classification, 'classification')
         const confirmResponse = await axios.get(`https://nuthatch.lastelm.software/birds/${classification}`, {headers: {accept: 'application/json', 'API-Key': '5740c2e1-3293-45b3-a215-31edafa6d2d6'}})
@@ -146,13 +146,11 @@ router.route('/:id').get(async (req, res) => {
 
 router.route('/:postId/comments/:commentId')
   .put(async (req, res) => {
-    //console.log('voting')
     const commentId = req.params.commentId
     const body = req.body
     let userId = req.body.userId
     let type = req.body.type
     let good = true
-   // console.log(type)
     
     try {
         if (type !== 'upvote' && type !== 'downvote') {

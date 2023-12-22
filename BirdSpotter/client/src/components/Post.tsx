@@ -1,4 +1,5 @@
 import React, { useState, ChangeEvent, FormEvent, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { MapContainer, TileLayer, Marker, Popup} from 'react-leaflet';
 import { useAuth0 } from "@auth0/auth0-react";
@@ -47,6 +48,7 @@ const LeafletMap: React.FC<{ onCoordinatesChange: (coordinates: [number, number]
 };
 
 const MyForm: React.FC = () => {
+    const navigate = useNavigate(); 
   let { user, isAuthenticated } = useAuth0();
   const [userData, setUserData] = useState<Record<string, any>>({});
   useEffect(() => {
@@ -66,21 +68,19 @@ const MyForm: React.FC = () => {
   }, [isAuthenticated, user]);
 
   const [formData, setFormData] = useState<FormData>({
-    userId: userData.userId || '', // Add userId from userData if available
+    userId: userData.userId || '',
     title: '',
     desc: '',
     image: null,
     coordinates: null,
   });
 
-  // suggestions when user types
   const [titleSuggestions, setTitleSuggestions] = useState<string[]>([]);
   
-  // accesses Nuthatch API 
   const fetchTitleSuggestions = async (inputValue: string) => {
     try {
       const response = await axios.get(`https://nuthatch.lastelm.software/v2/birds?name=${inputValue}`, {headers: {'api-key': 'c381a016-3a46-4199-a28b-f40f3ec14141'}});
-      const entities = response.data.entities; // Assuming "entities" is the array in your API response
+      const entities = response.data.entities;
       const suggestions = entities.filter((entity:any) => entity.name.toLowerCase().startsWith(inputValue.toLowerCase())).map((entity: any) => entity.name);      
       setTitleSuggestions(suggestions);
       } catch (error) {
@@ -91,7 +91,6 @@ const MyForm: React.FC = () => {
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    // sets 250 character limit
     if(name === 'desc' && value.length === 250)
     {
       window.alert("Description shouldn't exceed 250 characters.");
@@ -108,7 +107,6 @@ const MyForm: React.FC = () => {
   };
 
   useEffect(() => {
-    // delay fetching suggestions to allow state to update
     const delay = setTimeout(() => {
       if (formData.title.trim() === '') {
         setTitleSuggestions([]);
@@ -117,7 +115,7 @@ const MyForm: React.FC = () => {
       }
     }, 200);
 
-    return () => clearTimeout(delay); // Clear the timeout if the component unmounts or the title changes
+    return () => clearTimeout(delay); 
   }, [formData.title]);
 
   // handles title select
@@ -128,16 +126,12 @@ const MyForm: React.FC = () => {
   }
 
   const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-  if (!files || files.length === 0) {
+    const files = e.target.files && e.target.files[0];
+  if (!files) {
     window.alert("Please select an image.");
     return;
   }
-  if (files.length > 1) {
-    window.alert("Please select only one image.");
-    return;
-  }
-  const file = files[0];
+  const file = files;
   setFormData({ ...formData, image: file });
   };
 
@@ -169,7 +163,7 @@ const MyForm: React.FC = () => {
 
     try {
       const form = new FormData();
-      form.append('userId', userData._id);//formData.userId); // Include userId in the form data
+      form.append('userId', userData._id);
       form.append('title', formData.title);
       form.append('desc', formData.desc);
       if (formData.image) {
@@ -189,6 +183,8 @@ const MyForm: React.FC = () => {
         },
       });
       console.log('Backend response:', response.data);
+      const postId = response.data.data._id;
+      navigate('/post/'+postId);
     } catch (error) {
       console.error('Error sending data to backend:', error);
     }
