@@ -128,7 +128,6 @@ const MyForm: React.FC = () => {
     return () => clearTimeout(delay); 
   }, [formData.title]);
 
-  // handles title select
   const handleTitleSelect = (selectedTitle: string) =>
   {
     setFormData({...formData, title: selectedTitle});
