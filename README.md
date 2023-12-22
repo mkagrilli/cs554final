@@ -1,10 +1,13 @@
 Welcome to Bird Spotter, an app to post and find the beautiful birds around you
 
 Starting the App
+
 The site backend is hosted with Azure and is already seeded and connected to redis
 so to start just navigate to the client folder and npm i then npm run dev and navigate to http://localhost:5173/
 
-Using the App
+
+Using the App 
+
 without logging in you can still view any posts and comments,
 but in order to post a bird or comment you will need to log in
 
