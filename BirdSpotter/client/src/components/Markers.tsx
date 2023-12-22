@@ -13,7 +13,7 @@ function Markers() {
     const [postMarks, setMarkers] = useState(null)
     useEffect(() => {
       const createMarkers = async () => {
-        const {data} = await axios.get("http://localhost:3000/posts")
+        const {data} = await axios.get("https://bird-spotter.azurewebsites.net/posts")
         const posts = data.data
         setMarkers(posts.map((posts: any) => {
           return <PostMarker post={posts} key={posts._id}/>

@@ -20,10 +20,10 @@ const LeafletMap: React.FC<{ onCoordinatesChange: (coordinates: [number, number]
         const getUserData = async () => {
             if (isAuthenticated && user) {
                 const data = { authId: user.sub };
-                const userIsRegistered = (await axios.post(`http://localhost:3000/users/checkIfRegistered`, data)).data.isRegistered;
+                const userIsRegistered = (await axios.post(`https://bird-spotter.azurewebsites.net/users/checkIfRegistered`, data)).data.isRegistered;
                 if (userIsRegistered) {
                     console.log('User is authenticated and registered');
-                    const data = (await axios.get(`http://localhost:3000/users/authid/${user.sub}`)).data.data
+                    const data = (await axios.get(`https://bird-spotter.azurewebsites.net/users/authid/${user.sub}`)).data.data
                     console.log(data)
                 }
             }
@@ -65,10 +65,10 @@ const MyForm: React.FC = () => {
     const getUserData = async () => {
       if (isAuthenticated && user) {
         const data = { authId: user.sub };
-        const userIsRegistered = (await axios.post(`http://localhost:3000/users/checkIfRegistered`, data)).data.isRegistered;
+        const userIsRegistered = (await axios.post(`https://bird-spotter.azurewebsites.net/users/checkIfRegistered`, data)).data.isRegistered;
         if (userIsRegistered) {
           console.log('User is authenticated and registered');
-          const data = (await axios.get(`http://localhost:3000/users/authid/${user.sub}`)).data.data
+          const data = (await axios.get(`https://bird-spotter.azurewebsites.net/users/authid/${user.sub}`)).data.data
           setUserData(data);
           console.log(data)
         }
@@ -193,7 +193,7 @@ const MyForm: React.FC = () => {
 
       
 
-      const response = await axios.post<{ data: any }>('http://localhost:3000/posts/newpost', form, {
+      const response = await axios.post<{ data: any }>('https://bird-spotter.azurewebsites.net/posts/newpost', form, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },

@@ -15,7 +15,7 @@ const Register: React.FC = () => {
     const checkIfRegistered = async () => {
         if (isAuthenticated && user) {
             const data = { authId: user.sub };
-            const userIsRegistered = (await axios.post(`http://localhost:3000/users/checkIfRegistered`, data)).data.isRegistered;
+            const userIsRegistered = (await axios.post(`https://bird-spotter.azurewebsites.net/users/checkIfRegistered`, data)).data.isRegistered;
             if (userIsRegistered) {
                 handleRedirect();
             } 
@@ -36,7 +36,7 @@ const Register: React.FC = () => {
                 username: username,
                 email: user.email
             }
-            const response = (await axios.post(`http://localhost:3000/users/register`, data)).data.isRegistered;
+            const response = (await axios.post(`https://bird-spotter.azurewebsites.net/users/register`, data)).data.isRegistered;
             if (response) {
                 console.log("User successfully registered!")
                 handleRedirect()

@@ -36,7 +36,7 @@ function AddComment(props: any) {
             setErr(e)
         }
         if (pass) {
-            await axios.post(`http://localhost:3000/posts/${props.postId}`, {body: formData.body, classification: `${selected}`, userId: cookies.userId});
+            await axios.post(`https://bird-spotter.azurewebsites.net/posts/${props.postId}`, {body: formData.body, classification: `${selected}`, userId: cookies.userId});
             alert('Comment added');
             (document.getElementById('body') as HTMLInputElement).value = '';
             (document.getElementById('term') as HTMLInputElement).value = '';

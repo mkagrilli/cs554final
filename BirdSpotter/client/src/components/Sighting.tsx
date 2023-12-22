@@ -15,7 +15,7 @@ function Sighting() {
     const [commentedBirds, setBirds] = useState<any>([])
     useEffect(() => {
         const fetchData = async (id: any) => {
-            const {data} = await axios.get(`http://localhost:3000/posts/${id}`) 
+            const {data} = await axios.get(`https://bird-spotter.azurewebsites.net/posts/${id}`) 
             setSighting(data.data)
             if (data.data.comments.length !== 0) {
                 let comms = data.data.comments.map((comms: any) => {

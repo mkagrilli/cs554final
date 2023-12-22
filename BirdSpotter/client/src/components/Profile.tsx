@@ -11,10 +11,10 @@ const Profile: React.FC = () => {
         const getUserData = async () => {
             if (isAuthenticated && user) {
                 const data = { authId: user.sub };
-                const userIsRegistered = (await axios.post(`http://localhost:3000/users/checkIfRegistered`, data)).data.isRegistered;
+                const userIsRegistered = (await axios.post(`https://bird-spotter.azurewebsites.net/users/checkIfRegistered`, data)).data.isRegistered;
                 if (userIsRegistered) {
                     console.log('User is authenticated and registered');
-                    const data = (await axios.get(`http://localhost:3000/users/authid/${user.sub}`)).data.data
+                    const data = (await axios.get(`https://bird-spotter.azurewebsites.net/users/authid/${user.sub}`)).data.data
                     setUserData(data);
                     console.log(data)
                 }
