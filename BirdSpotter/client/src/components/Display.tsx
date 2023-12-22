@@ -57,9 +57,11 @@ const Display: React.FC = () => {
       try {
         setPageNumber(pageNumberState);
         const { data } = await axios.get(`http://localhost:3000/posts/page/${pageNumberState}`);
+        const { data: postCountData } = await axios.get(`http://localhost:3000/posts/postcount/amount`);
         let tot = Object.keys(data).length;  
         let results: Post[] = [];
         let max;
+        const amount = postCountData.postCount;
         if (tot === 0) {
             set404(true);
             return;
@@ -75,6 +77,9 @@ const Display: React.FC = () => {
           setPrevButton(false);
         } else {
           setPrevButton(true);
+        }
+        if(amount === tot*pageNumberState){
+            setNextButton(false);
         }
         results = Object.values(data);
         set400(false);

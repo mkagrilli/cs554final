@@ -235,6 +235,15 @@ router.route('/:id').get(async (req, res) => {
         return res.status(500).json({error: e})
     }
   });
+  router.route('/postcount/amount').get(async (req, res) => {
+    try {
+        const postCount = await posts.getPostCount();
+        return res.status(200).json({ postCount: postCount });
+    } catch (e) {
+        console.error('Error getting post count:', e);
+        return res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
 
 router.route('/:postId/comments/:commentId')
   .put(async (req, res) => {
