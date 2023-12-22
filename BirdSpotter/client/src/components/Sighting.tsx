@@ -11,14 +11,20 @@ function Sighting() {
     const [comments, setComments] = useState<undefined | any>(undefined)
     const [isComments, setIs] = useState(false)
     const [toggleCom, setToggle] = useState(false)
+    const [commentedUsers, setUsers] = useState<any>([])
+    const [commentedBirds, setBirds] = useState<any>([])
     useEffect(() => {
         const fetchData = async (id: any) => {
             const {data} = await axios.get(`http://localhost:3000/posts/${id}`) 
             setSighting(data.data)
             if (data.data.comments.length !== 0) {
                 let comms = data.data.comments.map((comms: any) => {
-                    return ((<div><Comment comment={comms} key={comms._id}/><br/></div>))
+                    setUsers((commentedUsers:any) => ([...commentedUsers,comms.userId]))
+                    setBirds((commentedBirds:any) => ([...commentedBirds,comms.classification]))
+                    return ((<div key={comms._id}><Comment comment={comms}/><br/></div>))
                 })
+                console.log(commentedUsers)
+                console.log(commentedBirds)
                 setComments(comms)
                 setIs(true)
             }
@@ -39,7 +45,7 @@ function Sighting() {
                 <span>Disagree with the poster's bird identification? </span>
                 <button onClick={() => setToggle(!toggleCom)}>submit your own with a comment</button>
                 <br/>
-                {toggleCom && <AddComment postId={id}/>}
+                {toggleCom && <AddComment postId={id} postUser={sighting.userId} commentedUsers={commentedUsers} commentedBirds={commentedBirds}/>}
             </div>
         </div>
         )
