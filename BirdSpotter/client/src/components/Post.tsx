@@ -1,7 +1,7 @@
 import React, { useState, ChangeEvent, FormEvent, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { MapContainer, TileLayer, Marker, Popup} from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Popup, useMapEvents} from 'react-leaflet';
 import { useAuth0 } from "@auth0/auth0-react";
 
 interface FormData {
@@ -31,6 +31,16 @@ const LeafletMap: React.FC<{ onCoordinatesChange: (coordinates: [number, number]
         getUserData();
     }, [isAuthenticated, user]); 
   const [position, setPosition] = useState<[number, number]>([0, 0]);
+
+  const map = useMapEvents({
+    click() {
+      map.locate()
+    },
+    locationfound(e: any) {
+      setPosition(e.latlng)
+      map.flyTo(e.latlng, 13)
+    }
+  })
 
   const handleMarkerDragEnd = (event: L.LeafletEvent) => {
     const marker = event.target.getLatLng();
@@ -216,6 +226,7 @@ const MyForm: React.FC = () => {
       </label>
       <br />
       <br />
+      <span>Click the map to jump to your location, drag the marker to select sighting location</span>
       <MapContainer center={[0, 0]} zoom={2} style={{ height: '300px', width: '100%' }}>
         <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
         <LeafletMap onCoordinatesChange={handleCoordinatesChange} />
