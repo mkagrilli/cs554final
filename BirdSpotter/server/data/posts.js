@@ -18,87 +18,13 @@ export const create = async (userId, title, imageUrl, description, location, coo
 		throw new Error("Error: title must be at least 5 characters long.")
 	}
 	if (!ObjectId.isValid(userId)) {throw new Error("Error: invalid object ID.")};
-	let Allimages = imageUrl 
-	let paths = [];
 	description = helpers.isValidString(description);
 	location = helpers.isValidString(location);
-
-	if (Array.isArray(Allimages)){
-		await Promise.all(
-            Allimages.map(async (x) => {
-                if (
-                    x.mimetype === 'image/jpeg' ||
-                    x.mimetype === 'image/png' ||
-                    x.mimetype === 'image/jpg' ||
-                    x.mimetype === 'jpeg/jpg' ||
-                    x.mimetype === 'jpg/jpeg'
-                ) {
-                    const image = x;
-                    const imagePath = path.join(__dirname, '..', 'uploads', image.originalname);
-                    paths.push(imagePath);
-
-                    const writeStream = fs.createWriteStream(imagePath);
-                    await writeStream.write(image.buffer);
-                    await writeStream.end();
-			}
-			else{
-				let pathway = path.join(__dirname, '..', 'uploads');
-				fs.readdir(pathway, (err, files) => {
-					if (err) throw err;
-					for( let x of files){
-						if (x != "258.png"){
-						let filepath = path.join(pathway, x);
-						fs.unlink(filepath, err => {
-							if (err) throw err;
-						});
-					}
-					}
-				});
-			}
-		})
-		);
-	}
-	else{
-		if (
-            imageUrl.mimetype === 'image/jpeg' ||
-            imageUrl.mimetype === 'image/png' ||
-            imageUrl.mimetype === 'image/jpg' ||
-            imageUrl.mimetype === 'jpeg/jpg' ||
-            imageUrl.mimetype === 'jpg/jpeg'
-        ) {
-            const image = imageUrl;
-            const imagePath = path.join(__dirname, '..', 'uploads', image.originalname);
-            paths.push(imagePath);
-
-            const writeStream = fs.createWriteStream(imagePath);
-            await writeStream.write(image.buffer);
-            await writeStream.end();
-			}
-			else{
-				let pathway = path.join(__dirname, '..', 'uploads');
-			fs.readdir(pathway, (err, files) => {
-				if (err) throw err;
-				for( let x of files){
-					if (x != "258.png"){
-					let filepath = path.join(pathway, x);
-					fs.unlink(filepath, err => {
-						if (err) throw err;
-					});
-				}
-				}
-			});
-			}
-		
-	}
-	const uploadFolderPath = path.join(__dirname, '..', 'uploads');
-    const files = await readdirAsync(uploadFolderPath);
-    console.log('Contents of the "uploads" folder:', files);
-	let images = await cloud.uploadImage(paths);
 
 	let newPost= {
 		userId: new ObjectId(userId),
 		title: title,
-		imageUrl: images,
+		imageUrl: imageUrl,
 		description: description,
 		location: location,
 		coordinates: coordinates,

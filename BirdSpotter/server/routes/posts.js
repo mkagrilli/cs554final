@@ -17,6 +17,17 @@ import dotenv from 'dotenv';
 dotenv.config();
 var api_key = 'cf69ccfea8804bfa99abb6fe78e8f6f0';
 
+import * as cloud from '../utils/cloudinary.js';
+import { promisify } from 'util';
+import fs from 'fs';
+const readdirAsync = promisify(fs.readdir);
+import path from 'path';
+import {fileURLToPath} from 'url';
+const __filename = fileURLToPath(import.meta.url);
+import {dirname} from 'path';
+import { type } from 'os';
+const __dirname = dirname(__filename);
+
 await client.connect();
 
 router.route('/').get(async (req, res) => {
@@ -48,6 +59,7 @@ router.route('/page/:pagenum').get(async (req, res) => {
         let data = await posts.getAll(limit, skip)
         let flatresults = flatten(data);
         let end = await client.set('pagenum'+String(pagenum),JSON.stringify(flatresults));
+        console.log("here", data);
         res.status(200).json(data);
       }
     } catch (e) {
@@ -87,7 +99,80 @@ router.route('/newpost').post(upload.single('image'), async (req, res) => {
         console.log("echo")
         console.log(req.body)
         let location = data.results[0].formatted;
-        const post = await posts.create(userId, title, image, desc, location, [latitude, longitude]);
+        let Allimages = image ;
+	    let paths = [];
+        if (Array.isArray(Allimages)){
+            await Promise.all(
+                Allimages.map(async (x) => {
+                    if (
+                        x.mimetype === 'image/jpeg' ||
+                        x.mimetype === 'image/png' ||
+                        x.mimetype === 'image/jpg' ||
+                        x.mimetype === 'jpeg/jpg' ||
+                        x.mimetype === 'jpg/jpeg'
+                    ) {
+                        const image = x;
+                        const imagePath = path.join(__dirname, '..', 'uploads', image.originalname);
+                        paths.push(imagePath);
+    
+                        const writeStream = fs.createWriteStream(imagePath);
+                        await writeStream.write(image.buffer);
+                        await writeStream.end();
+                }
+                else{
+                    let pathway = path.join(__dirname, '..', 'uploads');
+                    fs.readdir(pathway, (err, files) => {
+                        if (err) throw err;
+                        for( let x of files){
+                            if (x != "258.png"){
+                            let filepath = path.join(pathway, x);
+                            fs.unlink(filepath, err => {
+                                if (err) throw err;
+                            });
+                        }
+                        }
+                    });
+                }
+            })
+            );
+        }
+        else{
+            if (
+                image.mimetype === 'image/jpeg' ||
+                image.mimetype === 'image/png' ||
+                image.mimetype === 'image/jpg' ||
+                image.mimetype === 'jpeg/jpg' ||
+                image.mimetype === 'jpg/jpeg'
+            ) {
+                const imagefile = image;
+                const imagePath = path.join(__dirname, '..', 'uploads', imagefile.originalname);
+                paths.push(imagePath);
+    
+                const writeStream = fs.createWriteStream(imagePath);
+                await writeStream.write(imagefile.buffer);
+                await writeStream.end();
+                }
+                else{
+                    let pathway = path.join(__dirname, '..', 'uploads');
+                fs.readdir(pathway, (err, files) => {
+                    if (err) throw err;
+                    for( let x of files){
+                        if (x != "258.png"){
+                        let filepath = path.join(pathway, x);
+                        fs.unlink(filepath, err => {
+                            if (err) throw err;
+                        });
+                    }
+                    }
+                });
+                }
+            
+        }
+        const uploadFolderPath = path.join(__dirname, '..', 'uploads');
+        const files = await readdirAsync(uploadFolderPath);
+        console.log('Contents of the "uploads" folder:', files);
+        let images = await cloud.uploadImage(paths);
+        const post = await posts.create(userId, title, images, desc, location, [latitude, longitude]);
         let amount = await posts.getPostCount();
         let pages = amount/20;
         let x = 1;
