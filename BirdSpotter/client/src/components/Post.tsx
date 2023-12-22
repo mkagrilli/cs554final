@@ -141,6 +141,13 @@ const MyForm: React.FC = () => {
     window.alert("Please select an image.");
     return;
   }
+  const fileSize = files.size;
+  const maxSize = 10 * 1024 * 1024;
+
+  if (fileSize > maxSize) {
+    window.alert("Image size exceeds 10MB. Please choose a smaller file.");
+    return;
+  }
   const file = files;
   setFormData({ ...formData, image: file });
   };
@@ -193,6 +200,7 @@ const MyForm: React.FC = () => {
         },
       });
       console.log('Backend response:', response.data);
+      alert('post submitted');
       const postId = response.data.data._id;
       navigate('/post/'+postId);
     } catch (error) {
@@ -200,54 +208,62 @@ const MyForm: React.FC = () => {
     }
   };
 
-  return (
-    <form onSubmit={handleSubmit}>
-      <label>
-        Bird Species:
+  if (!isAuthenticated) {
+    return(
+      <div className='error'>You must be logged in to make a post</div>
+    )
+  }
+  else {
+      return (
+      <form onSubmit={handleSubmit}>
+        <label>
+          Bird Species:
+          <br />
+          <input type="text" name="title" value={formData.title} onChange={handleInputChange} />
+          
+          {titleSuggestions.length > 0 && (
+            <div>
+              {titleSuggestions.map((title, index) => (
+                <span key={index} onClick={() => handleTitleSelect(title)}>
+                  {title}<br/>
+                </span>
+              ))}
+            </div>
+          )}
+      </label>
         <br />
-        <input type="text" name="title" value={formData.title} onChange={handleInputChange} />
-        
-        {titleSuggestions.length > 0 && (
-          <ul>
-            {titleSuggestions.map((title, index) => (
-              <li key={index} onClick={() => handleTitleSelect(title)}>
-                {title}
-              </li>
-            ))}
-          </ul>
+        <br />
+        <label>
+          Description:
+          <br />
+          <textarea placeholder = "Describe the bird here..." name="desc" maxLength = {250} rows = {5} cols = {40} value={formData.desc} onChange={handleInputChange} />
+        </label>
+        <br />
+        <br />
+        <span>Click the map to jump to your location, drag the marker to select sighting location</span>
+        <MapContainer center={[0, 0]} zoom={2} style={{ height: '300px', width: '100%' }}>
+          <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+          <LeafletMap onCoordinatesChange={handleCoordinatesChange} />
+        </MapContainer>
+        {formData.coordinates && (
+          <p>
+            Selected Coordinates: {formData.coordinates[0]}, {formData.coordinates[1]}
+          </p>
         )}
-     </label>
-      <br />
-      <br />
-      <label>
-        Description:
-        <br />
-        <textarea placeholder = "Describe the bird here..." name="desc" maxLength = {250} rows = {5} cols = {40} value={formData.desc} onChange={handleInputChange} />
-      </label>
-      <br />
-      <br />
-      <span>Click the map to jump to your location, drag the marker to select sighting location</span>
-      <MapContainer center={[0, 0]} zoom={2} style={{ height: '300px', width: '100%' }}>
-        <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-        <LeafletMap onCoordinatesChange={handleCoordinatesChange} />
-      </MapContainer>
-      {formData.coordinates && (
-        <p>
-          Selected Coordinates: {formData.coordinates[0]}, {formData.coordinates[1]}
-        </p>
-      )}
 
-      <br />
-      <br />
-      <label>
-        Image:
-        <input type="file" name="image" accept="image/*" onChange={handleImageChange} />
-      </label>
-      <br />
-      <br />
-      <button type="submit">Submit</button>
-    </form>
-  );
+        <br />
+        <br />
+        <label>
+          Image:
+          <input type="file" name="image" accept="image/*" onChange={handleImageChange} />
+        </label>
+        <br />
+        <br />
+        <button type="submit">Submit</button>
+      </form>
+    );
+  }
+  
 };
 
 export default MyForm;
