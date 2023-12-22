@@ -36,9 +36,8 @@ function Sighting() {
         <div className='sighting'>
             <div className='sightingBody'>
                 <h3 className='postTitle'>{sighting.title}</h3>
-                <span>{sighting.location && sighting.location}</span>
-                <p>{sighting.description && sighting.description}</p>
-                <br/>
+                <span>Location: {sighting.location && sighting.location}</span>
+                <p>Description: {sighting.description && sighting.description}</p>
                 {sighting.imageUrl[0] && (<img src={sighting.imageUrl[0]} height='500'/>)}
                 <br/>
                 <br/>
