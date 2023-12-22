@@ -61,7 +61,7 @@ const comment19 = await comments.create(post9._id, user8._id, "This is a female 
 
 
 const comment1up = await comments.addUpvote(comment1._id, user3._id);
-const comment1upagain = await comments.addUpvote(comment1._id, user2._id);
+const comment1upagain = await comments.addUpvote(comment1._id, user10._id);
 const comment2up = await comments.addUpvote(comment1._id, user3._id);
 const comment2down = await comments.addDownvote(comment1._id, user4._id)
 const comment16up = await comments.addUpvote(comment16._id, user3._id);
