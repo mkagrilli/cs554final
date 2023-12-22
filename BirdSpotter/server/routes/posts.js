@@ -88,7 +88,13 @@ router.route('/newpost').post(upload.single('image'), async (req, res) => {
         console.log(req.body)
         let location = data.results[0].formatted;
         const post = await posts.create(userId, title, image, desc, location, [latitude, longitude]);
-        await client.flushAll();
+        let amount = await posts.getPostCount();
+        let pages = amount/20;
+        let x = 1;
+        while(x<=pages){
+            await client.del('pagenum' + String(x));
+            x++;
+        }
         return res.status(200).json({ data: post });
       } else {
         console.log('Unable to geocode! Response code: ' + response.status);

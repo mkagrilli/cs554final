@@ -148,6 +148,16 @@ export const get = async (id) => {
     return post;
 };
 
+export const getPostCount = async () => {
+    try {
+        const postCollection = await posts();
+        const postCount = await postCollection.countDocuments();
+        return postCount;
+    } catch (error) {
+        throw new Error(`Error: Unable to retrieve post count - ${error.message}`);
+    }
+};
+
 export const remove = async (id) => {
 	if (!ObjectId.isValid(id)) {throw new Error("Error: invalid object ID.")}
 	const postCollection = await posts();
