@@ -32,7 +32,7 @@ function Comment(props: any) {
         }
         const fetchData = async (uid: any) => {
             try {
-                const {data} = await axios.get(`http://localhost:3000/users/${uid}`) 
+                const {data} = await axios.get(`https://bird-spotter.azurewebsites.net/users/${uid}`) 
                 setUser(data.data)
                 let classification:any = await axios.get(`https://nuthatch.lastelm.software/birds/${comment.classification}`, {headers: {accept: 'application/json', 'API-Key': '5740c2e1-3293-45b3-a215-31edafa6d2d6'}})
                 classification = classification.data
@@ -50,7 +50,7 @@ function Comment(props: any) {
             setVErr('you must be logged in to do this')
         }
         else {
-            let upvoted = await axios.put(`http://localhost:3000/posts/${id}/comments/${comment._id}`, {type: 'upvote', userId: userId})
+            let upvoted = await axios.put(`https://bird-spotter.azurewebsites.net/posts/${id}/comments/${comment._id}`, {type: 'upvote', userId: userId})
             if (!upvoted) {
                 setVErr('unable to vote')
             }
@@ -81,7 +81,7 @@ function Comment(props: any) {
             setVErr('you must be logged in to do this')
         }
         else {
-            let downvote = await axios.put(`http://localhost:3000/posts/${id}/comments/${comment._id}`, {type: 'downvote', userId: userId})
+            let downvote = await axios.put(`https://bird-spotter.azurewebsites.net/posts/${id}/comments/${comment._id}`, {type: 'downvote', userId: userId})
             if (!downvote) {
                 setVErr('unable to vote')
             }

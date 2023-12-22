@@ -13,7 +13,7 @@ const CheckIfRegistered: React.FC = () => {
         const checkIfRegistered = async () => {
             if (isAuthenticated && user) {
                 const data = {authId: user.sub}
-                const userIsRegistered = (await axios.post(`http://localhost:3000/users/checkIfRegistered`, data)).data.isRegistered;
+                const userIsRegistered = (await axios.post(`https://bird-spotter.azurewebsites.net/users/checkIfRegistered`, data)).data.isRegistered;
                 if (userIsRegistered) {
                 } else {
                     handleRegister()

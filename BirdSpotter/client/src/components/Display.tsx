@@ -55,8 +55,8 @@ const Display: React.FC = () => {
     async function fetchData() {
       try {
         setPageNumber(pageNumberState);
-        const { data } = await axios.get(`http://localhost:3000/posts/page/${pageNumberState}`);
-        const { data: postCountData } = await axios.get(`http://localhost:3000/posts/postcount/amount`);
+        const { data } = await axios.get(`https://bird-spotter.azurewebsites.net/posts/page/${pageNumberState}`);
+        const { data: postCountData } = await axios.get(`https://bird-spotter.azurewebsites.net/posts/postcount/amount`);
         let tot = Object.keys(data).length;  
         let results: Post[] = [];
         let max;

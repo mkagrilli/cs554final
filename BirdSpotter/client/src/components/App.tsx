@@ -27,13 +27,13 @@ function App() {
     const checkIfRegistered = async () => {
         if (isAuthenticated && user) {
             const data = { authId: user.sub };
-            const userIsRegistered = (await axios.post(`http://localhost:3000/users/checkIfRegistered`, data)).data.isRegistered;
+            const userIsRegistered = (await axios.post(`https://bird-spotter.azurewebsites.net/users/checkIfRegistered`, data)).data.isRegistered;
             if (!userIsRegistered) {
                 handleRedirect();
                 console.log('User is authenticated but not registered');
             } else {
               console.log('User is authenticated and registered');
-              const data = (await axios.get(`http://localhost:3000/users/authid/${user.sub}`)).data.data
+              const data = (await axios.get(`https://bird-spotter.azurewebsites.net/users/authid/${user.sub}`)).data.data
               setCookie('userId', data._id)
               console.log('User is authenticated and registered');
             }
