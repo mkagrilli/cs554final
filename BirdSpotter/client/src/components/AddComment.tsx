@@ -39,7 +39,8 @@ function AddComment(props: any) {
             await axios.post(`http://localhost:3000/posts/${props.postId}`, {body: formData.body, classification: `${selected}`, userId: cookies.userId});
             alert('Comment added');
             (document.getElementById('body') as HTMLInputElement).value = '';
-            (document.getElementById('term') as HTMLInputElement).value = ''
+            (document.getElementById('term') as HTMLInputElement).value = '';
+            window.location.reload();
         }
     }
     const onSubmitSearch = async (e:any) => {
