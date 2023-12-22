@@ -43,8 +43,9 @@ router.route('/page/:pagenum').get(async (req, res) => {
         res.status(200).json(unflatresults);
       } else {
         console.log("Does not exist");
-        let offset = 50 * (pagenum-1);
-        let data = await posts.getAll();
+        let limit = 20;
+        let skip = limit * (pagenum - 1);
+        let data = await posts.getAll(limit, skip)
         let flatresults = flatten(data);
         let end = await client.set('pagenum'+String(pagenum),JSON.stringify(flatresults));
         res.status(200).json(data);

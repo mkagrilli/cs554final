@@ -127,9 +127,9 @@ export const create = async (userId, title, imageUrl, description, location, coo
 	return post;
 };
 
-export const getAll = async () => {
+export const getAll = async (limit = 0, skip = 0) => {
 	const postCollection = await posts();
-	let postList = await postCollection.find({}, {}).toArray();
+	let postList = await postCollection.find({}).limit(limit).skip(skip).toArray();
 	if (!postList) {throw new Error("Error: was unable to get all posts.")}
 	postList = postList.map((element) => {
 		element._id = element._id.toString();

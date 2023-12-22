@@ -60,11 +60,15 @@ const Display: React.FC = () => {
         let tot = Object.keys(data).length;  
         let results: Post[] = [];
         let max;
-        if (tot && tot < 50) {
+        if (tot === 0) {
+            set404(true);
+            return;
+          }
+        if (tot && tot < 20) {
           max = tot;
           setNextButton(false);
         } else {
-          max = 50;
+          max = 20;
           setNextButton(true);
         }
         if (pageNumberState === 1) {
