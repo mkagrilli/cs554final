@@ -14,6 +14,7 @@ import { useAuth0 } from "@auth0/auth0-react";
 import axios from 'axios';
 import { useCookies } from 'react-cookie';
 import Display from './Display';
+import BirdInfo from './birdInfo';
 
 function App() {
     const [cookies, setCookie] = useCookies(['userId'])
@@ -82,6 +83,7 @@ function App() {
           <Route path='/map' element={<MainMap/>}/>
           <Route path='/post/:id' element={<Sighting/>}/>
           <Route path='/register' element={<Register/>}/>
+          <Route path='/bird/:id' element={<BirdInfo/>}/>
           <Route path='*' element={<NotFound/>}/>
         </Routes>
       </div>
