@@ -127,9 +127,9 @@ export const create = async (userId, title, imageUrl, description, location, coo
 	return post;
 };
 
-export const getAll = async () => {
+export const getAll = async (limit = 0, skip = 0) => {
 	const postCollection = await posts();
-	let postList = await postCollection.find({}, {}).toArray();
+	let postList = await postCollection.find({}).limit(limit).skip(skip).toArray();
 	if (!postList) {throw new Error("Error: was unable to get all posts.")}
 	postList = postList.map((element) => {
 		element._id = element._id.toString();
@@ -146,6 +146,16 @@ export const get = async (id) => {
     if (post === null) {throw new Error("Error: there is no post with that id.")}
     post._id = post._id.toString();
     return post;
+};
+
+export const getPostCount = async () => {
+    try {
+        const postCollection = await posts();
+        const postCount = await postCollection.countDocuments();
+        return postCount;
+    } catch (error) {
+        throw new Error(`Error: Unable to retrieve post count - ${error.message}`);
+    }
 };
 
 export const remove = async (id) => {

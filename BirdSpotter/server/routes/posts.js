@@ -43,8 +43,9 @@ router.route('/page/:pagenum').get(async (req, res) => {
         res.status(200).json(unflatresults);
       } else {
         console.log("Does not exist");
-        let offset = 50 * (pagenum-1);
-        let data = await posts.getAll();
+        let limit = 20;
+        let skip = limit * (pagenum - 1);
+        let data = await posts.getAll(limit, skip)
         let flatresults = flatten(data);
         let end = await client.set('pagenum'+String(pagenum),JSON.stringify(flatresults));
         res.status(200).json(data);
@@ -87,7 +88,13 @@ router.route('/newpost').post(upload.single('image'), async (req, res) => {
         console.log(req.body)
         let location = data.results[0].formatted;
         const post = await posts.create(userId, title, image, desc, location, [latitude, longitude]);
-        await client.flushAll();
+        let amount = await posts.getPostCount();
+        let pages = amount/20;
+        let x = 1;
+        while(x<=pages){
+            await client.del('pagenum' + String(x));
+            x++;
+        }
         return res.status(200).json({ data: post });
       } else {
         console.log('Unable to geocode! Response code: ' + response.status);
