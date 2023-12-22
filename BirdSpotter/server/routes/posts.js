@@ -197,7 +197,18 @@ router.route('/newpost').post(upload.single('image'), async (req, res) => {
 router.route('/:id').get(async (req, res) => {
     try {
         req.params.id = helpers.isValidString(req.params.id, "Post ID");
-        return res.status(200).json({data: await posts.get(req.params.id)});
+        console.log("echo")
+        if (await client.exists(`posts-${req.params.id}`)) {
+            console.log("Post found in cache.")
+            let postData = JSON.parse(await client.get(`posts-${req.params.id}`));
+            console.log('Sending JSON from Redis....');
+            return res.status(200).json({data: postData});
+
+        } else {
+            const postData = await posts.get(req.params.id);
+            await client.set(`posts-${req.params.id}`, JSON.stringify(postData))
+            return res.status(200).json({data: postData});
+        }
     } catch (e) {
       console.error('Error processing request:', e);
       return res.status(400).json({ error: e.message });
@@ -229,6 +240,7 @@ router.route('/:id').get(async (req, res) => {
         if (!commentId) {
             throw `error: could not post comment`
         }
+        await client.del(`posts-${req.params.id}`);
         console.log(commentId)
         return res.status(200).json({commentId: commentId})
     }catch(e) {
@@ -273,6 +285,7 @@ router.route('/:postId/comments/:commentId')
                     throw `could not upvote post`
                 }
                 else {
+                    await client.del(`posts-${req.params.id}`);
                     return res.status(200).json({upvoted: true})
                 }
             }
@@ -282,6 +295,7 @@ router.route('/:postId/comments/:commentId')
                     throw `could not downvote post`
                 }
                 else {
+                    await client.del(`posts-${req.params.id}`);
                     return res.status(200).json({downvoted: true})
                 }
             }
