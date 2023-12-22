@@ -200,6 +200,7 @@ const MyForm: React.FC = () => {
         },
       });
       console.log('Backend response:', response.data);
+      alert('post submitted');
       const postId = response.data.data._id;
       navigate('/post/'+postId);
     } catch (error) {
