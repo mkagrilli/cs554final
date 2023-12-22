@@ -15,6 +15,7 @@ function Comment(props: any) {
     const [hasDownvoted, setDownvoted] = useState(false)
     const [voteErr, setVErr] = useState<any>(undefined)
     const [votes, setVotes] = useState(comment.upvotes.length - comment.downvotes.length)
+    const [isUsers, setIs] = useState(false);
     useEffect(() => {
         if (cookies.userId) {
             if (comment.upvotes.includes(cookies.userId)) {
@@ -22,6 +23,9 @@ function Comment(props: any) {
             }
             else if (comment.downvotes.includes(cookies.userId)) {
                 setDownvoted(true)
+            }
+            if (cookies.userId == comment.userId) {
+                setIs(true)
             }
         }
         const fetchData = async (uid: any) => {
@@ -108,8 +112,8 @@ function Comment(props: any) {
                 <span>{user.username}: {comment.body}</span>
                 <br/>
                 <span>Bird Classification: {bird && bird.name} | votes: {votes}</span>
-                <div><button className="Upvote" onClick={() => upvote(cookies.userId)}>{hasUpvoted?(<div>upvoted</div>): (<div>upvote</div>)}</button>
-                <button className="Downvote" onClick={() => downvote(cookies.userId)}>{hasDownvoted?(<div>downvoted</div>): (<div>downvote</div>)}</button><div className='error'>{voteErr && voteErr}</div></div>
+                <div>{!isUsers && (<div><button className="Upvote" onClick={() => upvote(cookies.userId)}>{hasUpvoted?(<div>upvoted</div>): (<div>upvote</div>)}</button>
+                <button className="Downvote" onClick={() => downvote(cookies.userId)}>{hasDownvoted?(<div>downvoted</div>): (<div>downvote</div>)}</button><div className='error'>{voteErr && voteErr}</div></div>)}</div>
                 <span>_______________________________________</span>
             </div>
         )
