@@ -71,6 +71,11 @@ function DisplayCard({ post }: DisplayCardProps) {
                 {post.description
                   ? post.description
                   : 'No Description'}
+                  <br />
+                <span>Location: </span>
+                {post.location
+                  ? post.location
+                  : 'No location'}
               </Typography>
             </CardContent>
           </Link>
