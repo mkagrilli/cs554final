@@ -7,7 +7,6 @@ function AddComment(props: any) {
     const [formData, setFormData] = useState({body: '', classification: ''})
     const [error, setErr] = useState<null | any>(null)
     const [cookies, setCookie] = useCookies(['userId'])
-    const [searchTerm, setTerm] = useState<any>(null);
     const [results, setResults] = useState<any>(null)
     const [searchErr, setSErr] = useState<any>(null)
     const [selected, setSelected] = useState<any>(null)
@@ -67,12 +66,17 @@ function AddComment(props: any) {
 
     if (!cookies.userId) {
         return(
-            <div>you must be logged in to leave a comment</div>
+            <div className='error'>you must be logged in to leave a comment</div>
         )
     }
     else if(usersCommented.includes(cookies.userId)) {
         return(
-            <div>you can only leave one comment</div>
+            <div className='error'>you can only leave one comment</div>
+        )
+    }
+    else if(cookies.userId == props.postUser) {
+        return(
+            <div className='error'>you cannot comment on your own post</div>
         )
     }
     else {
