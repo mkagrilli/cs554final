@@ -8,6 +8,9 @@ export const create = async (authId, username, email) => {
     if (username.length < 3) {
         throw new Error("Error: usernames must be at least 3 characters long.")
     }
+    if (username.length > 32) {
+        throw new Error("Error: usernames must be less than 32 characters long.")
+    }
     email = helpers.isValidEmail(email, "Email");
 
     const allUsers = await getAll();

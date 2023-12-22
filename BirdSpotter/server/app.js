@@ -1,12 +1,3 @@
-/*******************************************************************************
- * Name        : app.js
- * Author      : Brandon Leung
- * Date        : March 25, 2023
- * Description : Hello, comment "Hello there" if you read this :)
- * Pledge      : I pledge my honor that I have abided by the Stevens Honor System.
- ******************************************************************************/
-// This file should set up the express server as shown in the lecture code
-
 import express from 'express';
 import cors from 'cors'
 import {fileURLToPath} from 'url';
