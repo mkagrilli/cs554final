@@ -217,16 +217,16 @@ const MyForm: React.FC = () => {
       return (
       <form onSubmit={handleSubmit}>
         <label>
-          Bird Species:
+          Bird Species (Select one):
           <br />
           <input type="text" name="title" value={formData.title} onChange={handleInputChange} />
           
           {titleSuggestions.length > 0 && (
             <div>
               {titleSuggestions.map((title, index) => (
-                <span key={index} onClick={() => handleTitleSelect(title)}>
+                <button key={index} onClick={() => handleTitleSelect(title)}>
                   {title}<br/>
-                </span>
+                </button>
               ))}
             </div>
           )}
